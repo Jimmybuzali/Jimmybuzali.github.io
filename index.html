@@ -1092,6 +1092,7 @@ body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
 .kb-l{font-size:12px;opacity:.8;margin:4px 0 0}
 .kb-links{display:flex;gap:16px;flex-wrap:wrap;margin:4px 2px 2px}
 .kb-links .link{color:inherit;font-size:13px;font-weight:500}
+.ver{font-size:12px;opacity:.55;text-align:center;margin:18px 0 4px}
 .kb-pz summary{font-size:13px;font-weight:500;cursor:pointer;padding:6px 2px}
 </style>
 </head>
@@ -1237,7 +1238,7 @@ function itemsEq(items){ const e=Z(); (items||[]).forEach(it=>addEq(e,itemEq(it)
 
 function snackItems(p){ return p.snack==='oblea' ? [{k:'oblea',q:1}] : [{k:'dontworry',q:10}]; }
 
-function kipeAtOf(st){ return st.kipeAt || (st.dow===0 ? 'comida' : 'cena'); }
+function kipeAtOf(st){ const d = typeof st.dow==='number' ? st.dow : new Date().getDay(); return st.kipeAt || (d===0 ? 'comida' : 'cena'); }
 function buildSlots(day, prefs){
   const s = [];
   s.push({id:'desayuno', name:'Desayuno', kind:'fixed', veg:true,
@@ -2904,7 +2905,8 @@ function datosSheet(){
     <p class="note" style="margin-top:0">Tu registro tiene ${n} ${n===1?'día':'días'}. Todo vive en este teléfono. Guarda un respaldo de vez en cuando por si cambias de teléfono o borras Safari.</p>
     <button class="cta" data-act="backup">Guardar respaldo</button>
     <button class="cta sec" data-act="restore">Cargar un respaldo</button>
-    <input type="file" id="restoreFile" accept="application/json,.json" hidden>`;
+    <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+    <p class="ver">Versión de la app: ${esc(verTxt())}</p>`;
 }
 
 function vizHTML(k, T, big){
@@ -3561,7 +3563,8 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794174641';
+const BUILD='1794175031';
+function verTxt(){ const n=+BUILD; if (!n) return 'de prueba'; const d=new Date(n*1000); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]+', '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 (function autoUpdate(){
   let busy=false, last=0;
   async function check(){
