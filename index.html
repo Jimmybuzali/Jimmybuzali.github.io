@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Dieta">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 <title>Dieta Jimmy</title>
@@ -608,6 +608,165 @@ body{font-size:15.5px}
 .ai.listen .ai-chips{opacity:0;pointer-events:none}
 .ai.listen .ai-new{opacity:0;pointer-events:none}
 
+/* =================== v5: cada bloque su color, su gráfica y su profundidad =================== */
+@property --lvl{syntax:'<number>';inherits:true;initial-value:0}
+.tile{--c1:#fff;--c2:#888;--c3:#222;--c4:#000;--acc:#fff;
+  background:radial-gradient(150% calc(48% + var(--lvl) * 62%) at 50% -8%,var(--c1) 0%,var(--c2) 32%,var(--c3) 66%,var(--c4) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 0 0 1px rgba(255,255,255,.07),inset 0 -26px 40px -24px var(--edge),0 26px 44px -28px rgba(0,0,0,.95);
+  transition:transform .55s var(--spring),--lvl 1.9s var(--soft)}
+.tile .hole{display:none}
+.t-P{--c1:#FFC2A1;--c2:#F2683F;--c3:#5C1B12;--c4:#100605;--acc:#FFB892;--edge:rgba(242,104,63,.55)}
+.t-C{--c1:#FFEBB8;--c2:#E9A53C;--c3:#5A3510;--c4:#110B04;--acc:#FFD88E;--edge:rgba(233,165,60,.5)}
+.t-F{--c1:#CFC9FF;--c2:#6E5CF0;--c3:#25195F;--c4:#090618;--acc:#C8C0FF;--edge:rgba(110,92,240,.6)}
+.t-G{--c1:#EEF5B0;--c2:#9DB443;--c3:#2F3B12;--c4:#0A0D04;--acc:#E6F09E;--edge:rgba(157,180,67,.5)}
+.tile .dm{filter:drop-shadow(0 0 2px rgba(255,255,255,.55)) drop-shadow(0 0 7px var(--acc))}
+.ticks line.tip{stroke:var(--acc)}
+.ticks line.on{stroke:rgba(255,255,255,.92)}
+.tile .big{display:flex;align-items:baseline;justify-content:center;gap:6px;margin-top:22px}
+.tile .big .unit{margin:0;font-size:13px}
+.tile .viz{display:block;width:100%;margin-top:auto;padding-top:8px}
+.tile .of{margin-top:6px}
+.v{display:block;width:100%;height:auto;overflow:visible}
+/* carbo: arcos por comida sobre una línea de puntos */
+.v-arcs .bd{fill:rgba(255,255,255,.28)}
+.v-arcs .ab{fill:none;stroke:rgba(255,255,255,.22);stroke-width:1;stroke-dasharray:1.2 2.4}
+.v-arcs .af{fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s var(--soft);transition-delay:calc(.15s + var(--j) * .18s);filter:drop-shadow(0 0 3px var(--acc))}
+.tile.in .v-arcs .af{stroke-dashoffset:calc(1 - var(--f))}
+.v-arcs .pt{fill:var(--acc);filter:drop-shadow(0 0 4px var(--acc))}
+.v-arcs .lb{fill:rgba(255,255,255,.7);font-size:7px;text-anchor:middle;font-family:var(--font)}
+/* blueberries: cada bolita es ¼ de taza */
+.v-berries .bry{transform-box:fill-box;transform-origin:center;transform:scale(.4);opacity:0;transition:transform .7s var(--spring),opacity .4s;transition-delay:calc(var(--j) * 70ms)}
+.tile.in .v-berries .bry{transform:none;opacity:1}
+.v-berries .b{fill:none;stroke:rgba(255,255,255,.3);stroke-width:1;stroke-dasharray:1.5 2}
+.v-berries .hl,.v-berries .cr{opacity:0}
+.v-berries .on .b{fill:url(#none);fill:#7F6DF5;stroke:rgba(255,255,255,.55);stroke-dasharray:none;filter:drop-shadow(0 0 5px rgba(160,145,255,.7))}
+.v-berries .on .hl{opacity:.75;fill:#fff}
+.v-berries .on .cr{opacity:.8;fill:none;stroke:#D9D3FF;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
+/* aceite: gotas que se llenan */
+.v-drops .dk{fill:rgba(255,255,255,.04)}
+.v-drops .lq{fill:url(#none);fill:#D7E57A;transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);transition:transform 1.5s var(--soft);transition-delay:calc(.2s + var(--j) * .2s)}
+.tile.in .v-drops .lq{transform:scaleY(var(--f))}
+.v-drops .ol{fill:none;stroke:rgba(255,255,255,.6);stroke-width:1;filter:drop-shadow(0 0 4px var(--acc))}
+.v-drops .sh{fill:none;stroke:rgba(255,255,255,.7);stroke-width:1.2;stroke-linecap:round}
+/* tarjeta abierta: más información */
+.detail{text-align:center}
+.detail .big.lg{margin-top:26px}
+.detail .big.lg .unit{font-size:16px}
+.detail .viz.lg{margin-top:18px;padding:0 6px}
+.detail .of{font-size:13px;margin-top:8px}
+.detail ul.dt-rows{margin-top:16px}
+.detail .dt-rows li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-top:1px solid rgba(255,255,255,.12);text-align:left}
+.detail .dt-rows b{display:block;font-weight:400;font-size:15px;color:#fff}
+.detail .dt-rows small{display:block;font-size:12px;color:rgba(255,255,255,.62);margin-top:2px}
+.detail .dt-rows em{font-style:normal;font-size:20px;font-weight:300;letter-spacing:-.03em;color:#fff;white-space:nowrap;font-variant-numeric:tabular-nums}
+.detail p.dt-p{font-size:13px;line-height:1.45;color:rgba(255,255,255,.72);margin-top:12px}
+.detail p.dt-p b{display:block;font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--acc);margin-bottom:2px}
+.dt-ask{display:inline-flex;align-items:center;gap:9px;height:40px;margin-top:16px;padding:0 16px 0 9px;border-radius:999px;font-size:13.5px;color:#fff;background:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1px rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .45s var(--spring)}
+.dt-ask:active{transform:scale(.94)}
+#detail .detail{max-height:calc(100dvh - 40px);overflow:hidden;padding-bottom:16px}
+.detail .dt-rows li,.detail .dt-p,.dt-ask{animation:rowin .6s var(--spring) both}
+.detail .dt-rows li:nth-child(1){animation-delay:.18s}.detail .dt-rows li:nth-child(2){animation-delay:.24s}.detail .dt-p{animation-delay:.3s}.dt-ask{animation-delay:.36s}
+
+/* =================== BLANCO: página blanca; los bloques y la IA siguen siendo noche =================== */
+:root{
+  --bg:#FFFFFF; --ink:#0B0B0F; --ink-2:#4F4E57; --ink-3:#8B8A93; --ink-4:#C8C7CE; --line:rgba(12,12,24,.08); --line-2:rgba(12,12,24,.14);
+  --sky:#4F68D6; --sky-2:#7D93EA; --sky-soft:rgba(79,104,214,.08); --peach:#E07B32; --sun:#E8823F; --warn:#DD4F33; --warn-soft:rgba(221,79,51,.08);
+  --glass:linear-gradient(180deg,rgba(12,12,24,.035),rgba(12,12,24,.015));
+  --glass-edge:inset 0 0 0 1px rgba(12,12,24,.08);
+  --hz-line:linear-gradient(90deg,rgba(79,104,214,0),rgba(79,104,214,.45) 22%,rgba(232,130,63,.55) 78%,rgba(232,130,63,0));
+  --disc-sh:inset 0 -2px 3px rgba(0,0,0,.12),inset 0 1px 1px #fff,0 0 0 1px rgba(12,12,24,.08),0 4px 12px rgba(20,20,40,.18);
+  color-scheme:light;
+}
+/* la IA y la tarjeta grande se quedan en noche */
+.ai{--bg:#050506;--ink:#F4F3F6;--ink-2:#BEBDC6;--ink-3:#8D8C96;--ink-4:#3A3940;--line:rgba(255,255,255,.07);--line-2:rgba(255,255,255,.12);--sky:#8EA2F0;--sky-2:#B9C5F6;--peach:#FFC995;--sun:#F2945A;--warn:#FF8466;
+  --glass:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025));--glass-edge:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.075);
+  --disc-sh:inset 0 -2px 3px rgba(0,0,0,.2),inset 0 1px 1px #fff,0 3px 10px rgba(0,0,0,.6);color-scheme:dark}
+.surface{background:#fff;box-shadow:0 0 0 1px rgba(12,12,24,.06),0 1px 2px rgba(12,12,24,.04),0 22px 44px -28px rgba(30,34,70,.28)}
+.hd.scrolled{background:rgba(255,255,255,.84)}
+.dow button[aria-pressed="true"]{color:#fff;background:#0B0B0F;box-shadow:0 4px 12px -4px rgba(12,12,24,.4)}
+.seg{background:rgba(12,12,24,.045)}
+.seg .knob{background:#fff;box-shadow:0 0 0 1px rgba(12,12,24,.07),0 2px 8px rgba(20,20,40,.12)}
+.seg.seg-drag .knob{box-shadow:0 0 0 1px rgba(79,104,214,.35),0 8px 20px -6px rgba(79,104,214,.4)}
+.seg button.hov,.dl.sel .dl-t,.it.cur .t,.lg-d.today .lg-l,.cal .curso{color:var(--ink)}
+.dl-line{background:rgba(12,12,24,.1)}
+.dl.sel .dl-o{box-shadow:inset 0 0 0 1.5px var(--ink),0 0 0 5px rgba(12,12,24,.05)}
+.dl.ok .dl-o{box-shadow:inset 0 0 0 1px rgba(224,123,50,.5)}
+.card::after{background:radial-gradient(closest-side,rgba(79,104,214,.09),transparent)}
+.slide{background:rgba(12,12,24,.035)}
+.slide-fill{background:linear-gradient(90deg,rgba(79,104,214,.04),rgba(79,104,214,.1) 60%,rgba(232,130,63,.14))}
+.cta{background:#0B0B0F;color:#fff;box-shadow:0 10px 24px -12px rgba(12,12,24,.55)}
+.cta.sec{background:transparent;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.ask,.ghost{background:rgba(255,255,255,.86);color:var(--ink);box-shadow:0 0 0 1px rgba(12,12,24,.08),0 16px 34px -14px rgba(30,34,70,.35)}
+.scrim{background:rgba(240,240,246,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.scrim.black{background:rgba(0,0,0,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sheet{background:rgba(255,255,255,.97);box-shadow:0 0 0 1px rgba(12,12,24,.06),0 30px 80px -20px rgba(30,34,70,.4)}
+.grab{background:rgba(12,12,24,.14)}
+.field{background:rgba(12,12,24,.04)}
+.sheet .send{background:#0B0B0F;color:#fff;box-shadow:none}
+.sheet .send::before{display:none}
+.chip[aria-pressed="true"]{color:var(--ink);background:rgba(79,104,214,.08);box-shadow:inset 0 0 0 1px rgba(79,104,214,.45)}
+.verdict{background:rgba(12,12,24,.025)}
+.island-in{background:rgba(255,255,255,.96);box-shadow:0 0 0 1px rgba(12,12,24,.07),0 18px 40px -16px rgba(30,34,70,.4)}
+.adj{color:#3248A8}.adj.warn{color:#A8341E}.need{color:#C2452B}
+.tile{box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 0 -1px 0 rgba(0,0,0,.25),0 24px 40px -22px rgba(30,34,70,.55)}
+.lg-n{background:linear-gradient(180deg,#0B0B0F 25%,#4F68D6 75%,#E07B32);-webkit-background-clip:text;background-clip:text}
+.lg-bar{background:rgba(12,12,24,.04)}
+.lg-d.incompleto .lg-bar i{background:#C9C8D0}
+.lg-d.today .lg-bar{box-shadow:inset 0 0 0 1px rgba(12,12,24,.3)}
+.k.incompleto{background:#BDBCC4}
+.cal .cumplido{color:#0B0B0F}
+.cal .pasado{background:rgba(221,79,51,.1);box-shadow:inset 0 0 0 1px rgba(221,79,51,.45)}
+.cal .incompleto{background:rgba(12,12,24,.06)}
+.cal .today{outline-color:rgba(12,12,24,.5)}
+.slide.undo .thumb{background:radial-gradient(circle at 36% 30%,#fff,#f6eee8);color:var(--peach);box-shadow:inset 0 0 0 1px rgba(224,123,50,.5),0 4px 12px rgba(20,20,40,.15)}
+.diets li{background:rgba(12,12,24,.03)}
+
+/* =================== v6: Soft UI blanco · mesh gradients · glow =================== */
+html,body{background:#fff}
+body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
+  background:radial-gradient(38% 26% at 88% 6%,rgba(255,201,149,.42),transparent 70%),radial-gradient(42% 30% at 6% 30%,rgba(142,162,240,.30),transparent 70%),radial-gradient(40% 28% at 92% 62%,rgba(179,192,244,.26),transparent 70%),radial-gradient(46% 30% at 12% 96%,rgba(242,148,90,.20),transparent 70%);
+  filter:blur(24px);animation:aura 26s ease-in-out infinite alternate}
+@keyframes aura{to{transform:translate3d(0,-5%,0) scale(1.1)}}
+.surface{background:rgba(255,255,255,.56);backdrop-filter:blur(28px) saturate(1.8);-webkit-backdrop-filter:blur(28px) saturate(1.8);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.55),0 0 0 1px rgba(30,34,80,.05),0 24px 48px -28px rgba(40,46,110,.32),0 4px 10px -6px rgba(40,46,110,.1)}
+.hd.scrolled{background:rgba(255,255,255,.66)}
+.ask,.ghost{background:rgba(255,255,255,.62);backdrop-filter:blur(26px) saturate(1.8);-webkit-backdrop-filter:blur(26px) saturate(1.8);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(30,34,80,.06),0 18px 36px -16px rgba(40,46,110,.38)}
+.sheet{background:rgba(255,255,255,.82);backdrop-filter:blur(34px) saturate(1.8);-webkit-backdrop-filter:blur(34px) saturate(1.8)}
+.island-in{background:rgba(255,255,255,.8);backdrop-filter:blur(26px) saturate(1.8);-webkit-backdrop-filter:blur(26px) saturate(1.8)}
+.card::after{background:radial-gradient(closest-side,rgba(142,162,240,.16),transparent)}
+
+/* bloques: la misma familia del horizonte, cada uno con su parte */
+@property --mx{syntax:'<percentage>';inherits:false;initial-value:50%}
+.tile{border-radius:32px;min-height:196px;
+  background:
+    radial-gradient(135% calc(40% + var(--lvl) * 42%) at var(--mx) -14%,var(--c1) 0%,var(--c2) 36%,rgba(0,0,0,0) 80%),
+    radial-gradient(72% 46% at -4% 106%,var(--rim) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(72% 46% at 104% 106%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(105% 85% at 50% 60%,var(--c4) 0%,var(--c3) 72%,var(--c2) 128%);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.12),inset 0 0 24px 2px var(--rimg),inset 0 -20px 32px -12px var(--rimg),0 30px 54px -26px var(--sh),0 10px 22px -14px rgba(30,20,40,.35);
+  animation:mesh 10s ease-in-out infinite alternate;
+  transition:transform .55s var(--spring),--lvl 1.9s var(--soft)}
+.tile:nth-child(2){animation-delay:-3s}.tile:nth-child(3){animation-delay:-6s}.tile:nth-child(4){animation-delay:-8s}
+@keyframes mesh{0%{--mx:36%}100%{--mx:64%}}
+.tile::before{opacity:.55}
+.t-P{--c1:#FFD2B0;--c2:#F2945A;--c3:#6B2E1C;--c4:#170907;--rim:rgba(242,148,90,.85);--rimg:rgba(242,148,90,.55);--sh:rgba(242,148,90,.6);--acc:#FFC7A2;--edge:rgba(242,148,90,.6)}
+.t-C{--c1:#FFF4E4;--c2:#FFC995;--c3:#6E4526;--c4:#1A100A;--rim:rgba(255,201,149,.85);--rimg:rgba(255,201,149,.5);--sh:rgba(232,170,110,.55);--acc:#FFE2BE;--edge:rgba(255,201,149,.6)}
+.t-F{--c1:#E6EAFC;--c2:#8EA2F0;--c3:#28336F;--c4:#090C1E;--rim:rgba(142,162,240,.85);--rimg:rgba(142,162,240,.55);--sh:rgba(111,134,232,.6);--acc:#C9D3FF;--edge:rgba(142,162,240,.6)}
+.t-G{--c1:#FBF6FF;--c2:#B3C0F4;--c3:#3E3150;--c4:#120D18;--rim:rgba(242,148,90,.8);--rim2:rgba(142,162,240,.8);--rimg:rgba(255,201,149,.45);--sh:rgba(170,150,215,.6);--acc:#FFD3AE;--edge:rgba(255,201,149,.55)}
+.v-berries .on .b{fill:#8EA2F0;filter:drop-shadow(0 0 6px rgba(142,162,240,.9))}
+.v-berries .on .cr{stroke:#E6EAFC}
+.v-drops .lq{fill:#FFC995}
+.tile .of{color:rgba(255,255,255,.78)}
+.detail.tile{border-radius:36px}
+
+/* IA: escucha solo cuando tocas la esfera; al escuchar crece y se vuelve la voz */
+.ai.listen.listening{--os:min(66vw,258px)}
+.ai-orb{scale:calc(1 + var(--vx,0)) calc(1 + var(--vy,0))}
+.ai.listening .ai-float::before{opacity:calc(.4 + var(--v,0) * 1.1)}
+.ai-tap{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:var(--ink-3)}
+.ai-tap i{width:7px;height:7px;border-radius:50%;background:var(--peach);animation:pulse 1.8s var(--io) infinite}
+.ai.listening .ai-tap{display:none}
+
 </style>
 </head>
 <body>
@@ -1152,17 +1311,19 @@ function setLvl(t){ t.style.setProperty('--lvl', t.classList.contains('in') ? (t
 function paintLeft(res){
   const F = figs(res); const el = $('#left');
   if (!el.dataset.ready){
-    el.innerHTML = `<div class="sec-h"><h3><span class="sphere" aria-hidden="true"></span>Lo que te queda</h3><span>toca un bloque</span></div><section class="left"><div class="bento">${F.map(f=>`<button class="tile" data-act="tile" data-k="${f.id}" style="view-transition-name:tile-${f.id}"><span class="hole" aria-hidden="true"></span><span class="tile-top"><span class="lbl">${f.l}</span><span class="tb">${OPEN_IC}</span></span><span class="dial">${dialSVG()}<span class="dmw"></span></span><span class="unit"></span><span class="of"></span></button>`).join('')}</div></section><p class="also" id="also"></p><div id="log"></div><div class="foot"><button class="link" data-act="datos">Mis dietas y respaldo</button><button class="link" data-act="tabla">Tabla y pendientes</button><button class="link" data-act="reset">Reiniciar el día</button></div>`;
+    el.innerHTML = `<div class="sec-h"><h3>Lo que te queda</h3><span>toca un bloque</span></div><section class="left"><div class="bento">${F.map(f=>`<button class="tile t-${f.id}" data-act="tile" data-k="${f.id}"><span class="tile-top"><span class="lbl">${f.l}</span><span class="tb">${OPEN_IC}</span></span>${f.id==='P'?`<span class="dial">${dialSVG()}<span class="dmw"></span></span><span class="unit"></span>`:`<span class="big"><span class="dmw"></span><span class="unit"></span></span><span class="viz"></span>`}<span class="of"></span></button>`).join('')}</div></section><p class="also" id="also"></p><div id="log"></div><div class="foot"><button class="link" data-act="datos">Mis dietas y respaldo</button><button class="link" data-act="tabla">Tabla y pendientes</button><button class="link" data-act="reset">Reiniciar el día</button></div>`;
     el.dataset.ready='1';
     const io = new IntersectionObserver(es=>es.forEach(e=>{ const on = e.isIntersecting && e.intersectionRatio>.35; if (on) e.target.classList.add('in'); else if (!e.isIntersecting) e.target.classList.remove('in'); setLvl(e.target); }), {threshold:[0,.35,.7]});
     el.querySelectorAll('.tile').forEach(t=>io.observe(t));
   }
+  const T = {now:leverTotals(res,true), base:leverTotals(res,false)};
   F.forEach(f=>{
     const t = el.querySelector(`.tile[data-k="${f.id}"]`); if(!t) return;
     t.dataset.f = f.f.toFixed(3); setLvl(t);
     t.querySelector('.of').textContent = f.of+' hoy';
     const val = f.d+'|'+f.u;
-    if (prevBig[f.id]!==val){ t.querySelector('.dmw').innerHTML = dmSVG(f.d,22); t.querySelector('.unit').textContent = f.u; t.setAttribute('aria-label', `${f.l}: te quedan ${f.v} ${f.u}`); prevBig[f.id]=val; }
+    if (prevBig[f.id]!==val){ t.querySelector('.dmw').innerHTML = dmSVG(f.d, f.id==='P'?22:26); t.querySelector('.unit').textContent = f.u; t.setAttribute('aria-label', `${f.l}: te quedan ${f.v} ${f.u}`); prevBig[f.id]=val; }
+    const v=t.querySelector('.viz'); if (v){ const h=vizHTML(f.id,T,false); if (v.dataset.sig!==h){ v.dataset.sig=h; v.innerHTML=h; } }
   });
   const a = alsoText(res);
   $('#also').innerHTML = a.length ? `Además te falta: <b>${esc(joinY(a))}</b>.` : '';
@@ -1388,20 +1549,38 @@ $('#scrim').addEventListener('click', ()=>{ if (ui.detail) closeDetail(); else c
 
 /* bloque → detalle (shared element) */
 function openDetail(k){
-  const res = compute(st,prefs); const f = figs(res).find(x=>x.id===k); const t = leverTotals(res,true);
+  const res = compute(st,prefs); const f = figs(res).find(x=>x.id===k);
+  const T = {now:leverTotals(res,true), base:leverTotals(res,false)};
   const tile = document.querySelector(`.tile[data-k="${k}"]`);
-  const lines = Object.values(t.by).map(b=>{ const v = k==='P'?r5(b.P)+' g':k==='C'?(r5(b.C)+' g'+(b.kipe?' + '+b.kipe:'')):k==='F'?frac(b.F)+' taza':frac(b.G)+' cda'; return `<li><span>${esc(b.name)}</span><b>${v}</b></li>`; }).join('');
-  const meaning = {P:'Carne, pollo o pescado cocido. 30 g = 1 POA.',C:'Arroz, pasta, papa o quinoa cocidos. 50 g = 1 cereal.',F:'1 taza = 1 fruta.',G:'1 cda = 1 grasa.'}[k];
-  const html = `<div class="tile detail in" style="--lvl:0" data-act="closedetail" role="dialog" aria-label="${f.l}"><span class="hole" aria-hidden="true"></span><span class="tile-top"><span class="lbl">${f.l}</span><span class="tb">${OPEN_IC}</span></span><span class="dial big">${dialSVG()}<span class="dmw">${dmSVG(f.d,40)}</span></span><span class="unit">${esc(f.u)}</span><span class="of">${esc(f.of)} para hoy</span>${lines?`<ul>${lines}</ul>`:'<p>Ya no te queda nada pendiente de esto.</p>'}<p>${esc(meaning)}</p><p class="dt-x">Toca o desliza hacia abajo para cerrar</p></div>`;
+  const uo = v => k==='P'||k==='C' ? r5(v)+' g' : k==='F' ? frac(v)+' taza' : frac(v)+' cda';
+  const rows = Object.keys(T.base.by).map(id=>{ const b=T.base.by[id], n=T.now.by[id]; const bv=b[k], nv=n?n[k]:0;
+    const why = !n ? 'Ya la anotaste' : Math.abs(nv-bv)<.01 ? 'Como en tu plan' : nv<bv ? 'Bajó por lo que comiste' : 'Subió por lo que no comiste';
+    const extra = (k==='C' && n && n.kipe) ? ' · más '+n.kipe : '';
+    return `<li><span><b>${esc(b.name)}</b><small>${why}${n && Math.abs(nv-bv)>=.01?' · antes '+uo(bv):''}${esc(extra)}</small></span><em>${n?uo(nv):'Listo'}</em></li>`; }).join('');
+  const now = {P:T.now.prot, C:T.now.carb, F:T.now.fru, G:T.now.oil}[k];
+  const eq = {P:`Carne, pollo o pescado cocido. 30 g = 1 POA. Te quedan ${dec(now/30)} POA.`, C:`Arroz, pasta, papa o quinoa cocidos. 50 g = 1 cereal. ${now>EPS?'Equivale a '+tostadasTxt(now/50)+'.':'Hoy ya no te queda carbo.'}`, F:'1 taza = 1 fruta. Cada bolita es ¼ de taza.', G:'1 cda de aceite de oliva = 1 grasa. Cada gota es 1 cda.'}[k];
+  const rule = {P:'Si comes proteína de más, baja la de la cena, hasta 120 g como mínimo.', C:'Si comes cereal de más, baja primero el carbo de la cena y luego el de la comida.', F:'Si comes fruta de más, se quitan blueberries.', G:'Si comes grasa de más, se quita el aceite de la cena. Si no alcanza, ese día no hay latte.'}[k];
+  const q = {P:'¿Cuánta proteína me queda?', C:'¿Cuánto carbo me queda?', F:'¿Cuántas blueberries me quedan?', G:'¿Cuánto aceite me queda?'}[k];
+  const hero = k==='P' ? `<span class="dial big">${dialSVG()}<span class="dmw">${dmSVG(f.d,40)}</span></span><span class="unit">${esc(f.u)}</span>` : `<span class="big lg"><span class="dmw">${dmSVG(f.d,44)}</span><span class="unit">${esc(f.u)}</span></span><span class="viz lg">${vizHTML(k,T,true)}</span>`;
+  const html = `<div class="tile detail t-${k} in" style="--lvl:0" data-act="closedetail" role="dialog" aria-label="${f.l}"><span class="tile-top"><span class="lbl">${f.l}</span><span class="tb">${OPEN_IC}</span></span>${hero}<span class="of">${esc(f.of)} para hoy</span>
+    <ul class="dt-rows">${rows}</ul><p class="dt-p"><b>Equivale a</b>${esc(eq)}</p><p class="dt-p"><b>Si te pasas</b>${esc(rule)}</p>
+    <button class="dt-ask" data-act="askai" data-q="${esc(q)}"><span class="orb" style="--s:22px" aria-hidden="true"></span>Pregúntale a tu asistente</button><p class="dt-x">Toca o desliza hacia abajo para cerrar</p></div>`;
   ui.detail=k; haptic();
-  const show=()=>{ $('#detail').innerHTML=html; const d=$('#detail .detail'); d.style.viewTransitionName='tile-'+k; if (tile) tile.style.visibility='hidden'; $('#scrim').classList.add('on','black'); d.dataset.f=f.f.toFixed(3); requestAnimationFrame(()=>requestAnimationFrame(()=>{ d.style.setProperty('--lvl', f.f.toFixed(3)); setTicks(d); })); };
-  if (tile && document.startViewTransition && !RM.matches){ document.startViewTransition(()=>{ tile.style.viewTransitionName=''; show(); }); }
-  else show();
+  const show=()=>{ $('#detail').innerHTML=html; const d=$('#detail .detail'); d.style.viewTransitionName='tile-'+k; if (tile){ tile.style.viewTransitionName=''; tile.style.visibility='hidden'; } $('#scrim').classList.add('on','black'); d.dataset.f=f.f.toFixed(3); requestAnimationFrame(()=>requestAnimationFrame(()=>{ d.style.setProperty('--lvl', f.f.toFixed(3)); setTicks(d); })); };
+  if (tile && document.startViewTransition && !RM.matches){
+    tile.style.viewTransitionName='tile-'+k;
+    const t=document.startViewTransition(show);
+    t.finished.finally(()=>{ const d=$('#detail .detail'); if (d) d.style.viewTransitionName=''; });
+  } else show();
 }
 function closeDetail(){
-  const k=ui.detail; ui.detail=null; const tile=document.querySelector(`.tile[data-k="${k}"]`);
+  const k=ui.detail; ui.detail=null; const tile=document.querySelector(`.tile[data-k="${k}"]`); const d=$('#detail .detail');
   const hide=()=>{ $('#detail').innerHTML=''; if (tile){ tile.style.visibility=''; tile.style.viewTransitionName='tile-'+k; } $('#scrim').classList.remove('on','black'); $('#scrim').style.opacity=''; };
-  if (document.startViewTransition && !RM.matches) document.startViewTransition(hide); else hide();
+  if (document.startViewTransition && !RM.matches && tile){
+    if (d) d.style.viewTransitionName='tile-'+k;
+    const t=document.startViewTransition(hide);
+    t.finished.finally(()=>{ if (tile) tile.style.viewTransitionName=''; });
+  } else { hide(); if (tile) tile.style.viewTransitionName=''; }
 }
 
 /* bloques: se inclinan con el dedo y la luz de adentro lo sigue */
@@ -1504,6 +1683,7 @@ document.addEventListener('click', e=>{
   const sl = b.dataset.slot ? res.slots.find(s=>s.id===b.dataset.slot) : null;
   { const sg=b.closest('.seg'); if (sg && !ui.segFrom && b.getAttribute('aria-pressed')!=='true'){ const k=sg.querySelector('.knob'); if (k) ui.segFrom={act:a, slot:b.dataset.slot||'', px:knobPx(k)}; } }
   switch(a){
+    case 'askai': openAI(document.querySelector('#askbtn .orb'), b.dataset.q); break;
     case 'focus': focusSlot(b.dataset.slot, true); break;
     case 'focusstep': { const ids=res.slots.map(s=>s.id); const curId=$('#card')&&$('#card').dataset.slot; const j=ids.indexOf(curId)+(+b.dataset.d); if (ids[j]) focusSlot(ids[j], false); break; }
     case 'extra': haptic(); ui.ask={text:'',items:[],unknown:[],parsed:false,slot:null,as:'extra',fixed:true}; if (ui.sheet){ ui.sheet='ask'; render(); } else openSheet('ask', b); break;
@@ -1639,7 +1819,7 @@ const plainLines = (A,B,skip) => diffLines(A,B,st).filter(l=>!skip || !l.t.start
 
 /* ---------- respuestas ---------- */
 function aGreet(res){ const h=new Date().getHours(); return {text:`${h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches'}, Jimmy. ${statusOf(res).h} ¿En qué te ayudo?`}; }
-function aHelp(res){ return {text:'Puedo decirte qué te queda, si algo cabe, cuántos tacos o piezas de sushi te caben, qué pedir en un restaurante, por qué cambió tu día y qué está pendiente con tu nutrióloga. También anoto lo que comiste.', chips:defaultChips(res)}; }
+function aHelp(res){ return {text:'Pregúntame como le preguntarías a alguien: si algo te entra, si quedas tablas cambiando una cosa por otra, cuántos tacos te caben o qué pedir fuera. También muevo la app por ti: anoto lo que comiste, deshago comidas, quito extras, cambio tu snack o el día. Y te explico cómo funciona cualquier parte.', chips:defaultChips(res)}; }
 function aPend(){ return {text:'Esto está pendiente con tu nutrióloga. Mientras no te confirme, no le pongo número:', rows:PEND_LIST.map(p=>({a:'',n:`${p[0]}: ${p[1]}.`}))}; }
 function aRules(){ return {text:'Lo que ya comiste no se toca: se ajusta lo que falta, primero la cena y luego la comida.', rows:[
   {a:'',n:'Grasa de más: se quita el aceite de la cena; si no alcanza, ese día no hay latte.'},
@@ -1860,7 +2040,7 @@ function unknownTxt(list){
   if (rest.length) out.push(`“${rest.join('”, “')}” no viene en tu tabla. Pregúntale a tu nutrióloga; no le pongo número.`);
   return out.join(' ');
 }
-function aFallback(res){ return {text:'No te entendí bien. Prueba con algo como esto:', chips:defaultChips(res)}; }
+function aFallback(res){ return {text:'Esa no la entendí. Pregúntamelo con comida y cantidad, o dime qué quieres que cambie. Por ejemplo:', chips:defaultChips(res)}; }
 
 function aiBrain(raw,res){
   const t=nz(raw);
@@ -1868,7 +2048,12 @@ function aiBrain(raw,res){
   const words_=t.split(' ').length;
   if (/^(hola|buenas|buenos dias|buenas tardes|buenas noches|hey|que onda|que tal)\b/.test(t) && words_<=4) return aGreet(res);
   if (/^(gracias|ok|okay|va|perfecto|listo|genial|sale)\b/.test(t) && words_<=3) return {text:'Para eso estoy. Pregúntame cuando quieras.'};
-  if (/(que (puedes|sabes) hacer|como funcionas|en que me (ayudas|puedes ayudar)|\bayuda\b|que haces)/.test(t)) return aHelp(res);
+  if (/(que (puedes|sabes) hacer|en que me (ayudas|puedes ayudar)|que haces|que te puedo preguntar)/.test(t)) return aHelp(res);
+  if (/^(como|donde|para que sirve|que hace|que es)\b/.test(t) && /(hago|puedo|deshago|regreso|cambio|agrego|anoto|borro|quito|veo|uso|funciona|activo|guardo|corrijo|esta|sirve|hace|registro|bloque|esfera|respaldo)/.test(t) && !/\bcuant/.test(t) && !/(vale|equivale)/.test(t)) return aHowTo(t,res);
+  if (/(como funciona(s)?|como se usa|explicame la app)/.test(t)) return aHowTo(t,res);
+  const sw=t.match(/(?:me (?:tome|tomo|comi|como|echo|eche)|(?:^|si |y si )(?:tome|comi|como)) (.+?) (?:y|pero|entonces|,) (?:me )?(?:quito|quitar|quite|me salto|salto|dejo|no me como|no como|no me tomo|no tomo|elimino|cambio|le quito)\b(.+)/);
+  if (sw && /(tablas|parejo|a mano|compens|se cancela|quedo bien|estoy bien|cuadra|queda igual|es lo mismo|equivale|da igual|sale igual|ya quedo|ya estoy|empata)/.test(t)){ const r=aSwap(sw[1], sw[2], t, res); if (r) return r; }
+  const act=aiAction(t,raw,res); if (act) return act;
   if (/(pendiente|nutriologa|preguntarle)/.test(t)) return aPend();
   if (/(calori|kcal|\bmacros?\b)/.test(t)) return {text:'Tu plan no cuenta calorías: cuenta equivalentes. Al día son 5 cereales, 16 POA, 2 frutas y 2 grasas; la verdura es libre.'};
   if (/helado/.test(t) && /(no me (lo )?(voy a |vaya a )?com|en vez|en lugar|cambiar|cambio|sustitu|si no|quitar|sin helado|me salto|no quiero)/.test(t)) return aHelado(res);
@@ -1876,11 +2061,11 @@ function aiBrain(raw,res){
   if (/(cuanto (vale|es|equivale|cuenta)|cuantos? (cereales|poa|grasas|frutas) (es|son|vale)|equivale|que es (un|una|el|la) (poa|cereal|grasa|fruta|equivalente)|que significa)/.test(t)) return aEquiv(t,res);
   if (/(regla|como se paga|que pasa si me paso|si me paso)/.test(t)) return aRules();
   if (/\b(verdura|ensalada|lechuga|pepino|brocoli|jitomate|espinaca|calabaza)/.test(t) && !/(taco|sushi|pollo|carne|pescado)/.test(t)) return {text:'La verdura es libre: come la que quieras. Si no te la acabas, no pasa nada y no se compensa.'};
-  if (/\bcuant/.test(t) && /(puedo|caben?|alcanza|me toca|tocan|debo|comer|tomar|pedir)/.test(t)) return aHowMany(t,raw,res);
+  if (/\bcuant/.test(t) && /(puedo|caben?|alcanza|me toca|tocan|debo|comer|tomar|pedir|entran?)/.test(t)) return aHowMany(t,raw,res);
   const place=placeFromText(t);
   const restWords=/(restaurante|con (mis |unos )?amig|salgo a|salimos a|que pido|pedir|ordenar|comer fuera|cenar fuera|vamos a (comer|cenar))/.test(t);
   if (restWords || (place && /\b(voy|vamos|ir|iremos|pido|ordeno)\b/.test(t))) return aRestaurant(t,res);
-  const isCan=/(puedo|podria|cabe|caben|me alcanza|y si|que pasa si|si me (como|tomo|echo)|esta bien (si|comer)|se vale)/.test(t);
+  const isCan=/(puedo|podria|cabe|caben|me alcanza|y si|que pasa si|si me (como|tomo|echo)|esta bien (si|comer)|se vale|me entran?|entran? en mi dieta|esta dentro|me lo puedo|me la puedo|me los puedo|lo puedo|sale bien|me pasaria|me paso si)/.test(t);
   const isPast=/\b(me comi|comi|cene|desayune|me tome|tome|ya me|acabo de|almorce)\b/.test(t);
   const isLeft=/(queda|quedan|falta|faltan|resta|restan|llevo|como voy|como vamos|balance)/.test(t);
   if (/(que (he|e) comido|llevo comido|que comi hoy|que he cenado|resumen)/.test(t)) return aEaten(res);
@@ -1897,13 +2082,12 @@ function aiBrain(raw,res){
 }
 function defaultChips(res){
   const c=['¿Qué me queda hoy?']; const nl=nextLever(res);
-  if (nl) c.push(`¿Cuántos tacos me caben en ${nl.id==='cena'?'la cena':'la comida'}?`);
+  if (nl) c.push(`¿Me entran 2 tacos en ${nl.id==='cena'?'la cena':'la comida'}?`);
+  c.push('Si me tomo un whisky y quito la granola, ¿quedo tablas?');
   if (pendSl(res,'helado')) c.push('Si no me como el helado, ¿qué como?');
   if (baseLines(res,st).length) c.push('¿Por qué cambió mi día?');
   if (nl) c.push(`Voy a ${nl.id==='cena'?'cenar':'comer'} sushi con mis amigos`);
-  c.push('¿Puedo comer 2 obleas?');
-  if (pendSl(res,'cena')) c.push('¿Qué ceno hoy?');
-  c.push('¿Qué tengo pendiente con mi nutrióloga?');
+  c.push('¿Cómo deshago una comida?');
   return [...new Set(c)].slice(0,6);
 }
 function aiHello(res){
@@ -1953,20 +2137,20 @@ function aiLayout(){ const ai=$('#ai'); if (!ai.classList.contains('on')) return
 if (window.visualViewport){ visualViewport.addEventListener('resize', aiLayout); visualViewport.addEventListener('scroll', aiLayout); }
 
 /* ---------- abrir: la esfera crece y la noche sale del botón ---------- */
-function openAI(origin){
+function openAI(origin, q){
   const ai=$('#ai'); if (ai.classList.contains('on')) return;
   if (ui.sheet) closeSheetFast();
-  if (ui.detail){ const k=ui.detail; ui.detail=null; $('#detail').innerHTML=''; const tile=document.querySelector(`.tile[data-k="${k}"]`); if (tile){ tile.style.visibility=''; tile.style.viewTransitionName='tile-'+k; } $('#scrim').classList.remove('on','black'); }
+  if (ui.detail){ const k=ui.detail; ui.detail=null; $('#detail').innerHTML=''; const tile=document.querySelector(`.tile[data-k="${k}"]`); if (tile){ tile.style.visibility=''; tile.style.viewTransitionName=''; } $('#scrim').classList.remove('on','black'); }
   const res=compute(st,prefs); const H=aiHello(res);
   $('#aiHi').textContent=H.hi;
   setChips(defaultChips(res));
   ai.classList.toggle('chat', ui.ai.n>0); ai.classList.add('on','listen');
-  setLive(SR?'Te escucho…':H.sub, true, SR?'Habla normal. Cuando termines, te respondo.':'Escríbeme tu pregunta abajo.');
+  setLive(H.sub, true, SR?'Toca la esfera para hablarme, o escribe abajo.':'Escríbeme tu pregunta abajo.');
   ai.setAttribute('aria-hidden','false'); document.documentElement.classList.add('ai-lock');
   aiLayout();
   const o=(origin && origin.isConnected) ? origin : document.querySelector('#askbtn .orb');
   ui.ai.origin=o; haptic(); unlockTTS();
-  if (SR) aiMic();
+  if (q) setTimeout(()=>aiSend(q), 450);
   if (RM.matches || !o){ ai.animate([{opacity:0},{opacity:1}],{duration:180}); return; }
   const fly=$('#aiFly'); fly.style.transition='none'; const r=o.getBoundingClientRect(), tr=fly.getBoundingClientRect(); requestAnimationFrame(()=>{ fly.style.transition=''; });
   const dx=(r.left+r.width/2)-(tr.left+tr.width/2), dy=(r.top+r.height/2)-(tr.top+tr.height/2), s=Math.max(.05, r.width/tr.width);
@@ -2224,7 +2408,7 @@ function vLoop(){
     if (V.mode==='listen') t=Math.max(t, .05+.04*Math.sin(now/320));
     if (V.mode==='speak') t=Math.max(t, .14+.16*Math.abs(Math.sin(now/115))*Math.abs(Math.sin(now/470)));
     V.lvl += (t-V.lvl)*(t>V.lvl?.5:.14);
-    ai.style.setProperty('--v', V.lvl.toFixed(3));
+    ai.style.setProperty('--v', V.lvl.toFixed(3)); ai.style.setProperty('--vx', (V.lvl*.07*Math.sin(now/95)).toFixed(4)); ai.style.setProperty('--vy', (V.lvl*.07*Math.cos(now/120)).toFixed(4));
     if (V.mode || V.lvl>.01) V.raf=requestAnimationFrame(step); else ai.style.setProperty('--v','0');
   };
   V.raf=requestAnimationFrame(step);
@@ -2276,6 +2460,127 @@ function datosSheet(){
     <button class="cta" data-act="backup">Guardar respaldo</button>
     <button class="cta sec" data-act="restore">Cargar un respaldo</button>
     <input type="file" id="restoreFile" accept="application/json,.json" hidden>`;
+}
+
+function vizHTML(k, T, big){
+  const ms = Object.keys(T.base.by).map(id=>({id, name:T.base.by[id].name, b:T.base.by[id], n:T.now.by[id]||{P:0,C:0,F:0,G:0}}));
+  const sum = (key, w) => ms.reduce((s,m)=>s+m[w][key],0);
+  if (k==='C'){
+    const W=160, y=big?40:44, pad=8; const tot=sum('C','b')||1; let x=pad, svg='';
+    for (let i=0;i<=40;i++) svg+=`<circle cx="${(pad+i*(W-2*pad)/40).toFixed(1)}" cy="${y}" r=".75" class="bd"/>`;
+    let pts=`<circle cx="${pad}" cy="${y}" r="2.6" class="pt"/>`;
+    ms.forEach((m,j)=>{ if (m.b.C<EPS) return; const w=(W-2*pad)*m.b.C/tot; const x0=x, x1=x+w, rx=w/2, ry=Math.min(rx, big?34:36); const d=`M${x0.toFixed(1)} ${y} A${rx.toFixed(1)} ${ry.toFixed(1)} 0 0 1 ${x1.toFixed(1)} ${y}`;
+      const f=Math.max(0,Math.min(1,m.n.C/m.b.C));
+      svg+=`<path d="${d}" class="ab"/>`;
+      if (f>EPS) svg+=`<path d="${d}" class="af" pathLength="1" style="--f:${f.toFixed(3)};--j:${j}"/>`;
+      if (big) svg+=`<text x="${((x0+x1)/2).toFixed(1)}" y="${y+12}" class="lb">${esc(m.name.replace(' de kipe',''))}</text>`;
+      pts+=`<circle cx="${x1.toFixed(1)}" cy="${y}" r="2.6" class="pt"/>`; x=x1; });
+    return `<svg class="v v-arcs" viewBox="0 0 160 ${big?56:50}" aria-hidden="true">${svg}${pts}</svg>`;
+  }
+  if (k==='F'){
+    const N=Math.max(1,Math.round(sum('F','b')*4)), R=Math.round(sum('F','n')*4), per=4, rows=Math.ceil(N/per), r=big?8.5:7, gap=r*2.45; let svg='';
+    for (let i=0;i<N;i++){ const row=Math.floor(i/per), inRow=Math.min(per,N-row*per), col=i%per; const cx=80+(col-(inRow-1)/2)*gap, cy=(big?28:26)+(row-(rows-1)/2)*gap*.86;
+      svg+=`<g class="bry${i<R?' on':''}" style="--j:${i}"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" class="b"/><circle cx="${(cx-r*.32).toFixed(1)}" cy="${(cy-r*.34).toFixed(1)}" r="${(r*.26).toFixed(1)}" class="hl"/><path d="M${(cx-r*.28).toFixed(1)} ${(cy-r*.86).toFixed(1)}l${(r*.28).toFixed(1)} ${(r*.22).toFixed(1)}l${(r*.28).toFixed(1)} ${(-r*.22).toFixed(1)}" class="cr"/></g>`; }
+    return `<svg class="v v-berries" viewBox="0 0 160 ${big?56:50}" aria-hidden="true">${svg}</svg>`;
+  }
+  if (k==='G'){
+    const base=sum('G','b'), now=sum('G','n'); const N=Math.max(1,Math.ceil(base-EPS)); const s=N===1?(big?1.35:1.15):(big?1.05:.9); const w=24*s, gapx=w*1.5; let svg='';
+    for (let i=0;i<N;i++){ const fi=Math.max(0,Math.min(1,now-i)); const cx=80+(i-(N-1)/2)*gapx; const tx=cx-12*s, ty=(big?52:48)-36*s; const id=`dr${big?'b':'s'}${i}`;
+      const d='M12 2C14 8 22 15 22 23A10 10 0 0 1 2 23C2 15 10 8 12 2Z';
+      svg+=`<g transform="translate(${tx.toFixed(1)} ${ty.toFixed(1)}) scale(${s})" style="--j:${i}"><clipPath id="${id}"><path d="${d}"/></clipPath><g clip-path="url(#${id})"><rect x="0" y="0" width="24" height="34" class="dk"/><rect x="0" y="0" width="24" height="34" class="lq" style="--f:${fi.toFixed(3)}"/></g><path d="${d}" class="ol"/><path d="M7.5 20c-.6 2.6.4 4.8 2.4 6" class="sh"/></g>`; }
+    return `<svg class="v v-drops" viewBox="0 0 160 ${big?56:50}" aria-hidden="true">${svg}</svg>`;
+  }
+  return '';
+}
+
+function aHowTo(t,res){
+  const H=[
+    [/(deshac|deshag|regres|desmarc|no me lo comi|volver a|me equivoque|corregir|corrijo)/,'Toca la comida en la línea de arriba (Desayuno, Latte, Snack…). Si ya está anotada, desliza “no me lo comí”. Para cambiar cantidades, toca “Corregir cantidades”. O dime “deshaz el desayuno” y lo hago yo.'],
+    [/(extra|whisky|algo de mas|fuera del plan|antojo)/,'Toca “+ Extra” abajo y escribe lo que comiste, por ejemplo “1 whisky”. Se resta solo de las comidas que te faltan. O dímelo aquí: “me tomé un whisky”.'],
+    [/(registro|historial|grafica|racha|dias pasados|cumpli)/,'Abajo de los bloques está “Tu registro”: tu racha, la semana y el calendario. Cada día se guarda solo. Toca “Ver todo” para ver día por día.'],
+    [/(bloque|tarjeta de colores|proteina|carbo|aceite|blueberr)/,'Los bloques de colores dicen lo que te queda hoy de proteína, carbo, blueberries y aceite. Tócalos para ver cuánto va en cada comida, a qué equivale y qué pasa si te pasas.'],
+    [/(cambi.*cantidad|comi distinto|otra cosa|agregar comida|agrego comida)/,'Abre la comida y toca “Comí distinto” o “Corregir cantidades”. Ahí cambias cantidades, quitas cosas o escribes algo más que comiste.'],
+    [/(dia|semana|lunes|sabado|domingo|plan de)/,'Arriba están los días L M M J V S D. La app detecta hoy sola; si tocas otro día ves ese plan. También puedes decirme “hoy es sábado”.'],
+    [/(microfono|hablar|voz|dictar|esfera|bolita)/,'Toca la esfera para hablarme; crece y se mueve con tu voz. Cuando terminas de hablar, te contesto. También puedes escribir abajo.'],
+    [/(respaldo|backup|perder|cambio de telefono|dieta nueva|mis dietas)/,'Al final de la página está “Mis dietas y respaldo”. Ahí guardas un archivo con todo tu registro y lo puedes cargar en otro teléfono.'],
+    [/(snack|oblea|don ?t ?worry)/,'En la tarjeta del snack arrastra el selector entre 10 Don’t Worry y 1 oblea. O dime “cambia el snack a oblea”.'],
+    [/(compens|me paso|se paga|ajusta)/,null],
+  ];
+  for (const [re,txt] of H) if (re.test(t)) return txt ? {text:txt} : aRules();
+  return aHelp(res);
+}
+function lblItem(i){ const a=amountText(i.k,i.q); const n=CAT[i.k].n.split(' (')[0]; return new RegExp('\\b'+n.split(' ')[0].slice(0,5),'i').test(a) ? a : a+' de '+low(n); }
+function aSwap(aTxt,bTxt,t,res){
+  const A=parseFood(aTxt), B=parseFood(bTxt);
+  const hasNum=s=>/\d|\b(un|una|uno|dos|tres|cuatro|cinco|seis|media|medio)\b/.test(s);
+  const planQ=k=>{ for (const sl of res.slots){ const it=(sl.items||[]).find(i=>i.k===k); if (it) return {q:it.q, sl}; } return null; };
+  let bItems=B.items.filter(i=>!i.need).map(i=>Object.assign({},i)); let fromSlot=null;
+  if (!hasNum(bTxt)) bItems=bItems.map(i=>{ const p=planQ(i.k); if (p){ fromSlot=p.sl; return Object.assign({},i,{q:p.q}); } return i; });
+  if (!bItems.length){ const s=slotFromText(bTxt,res); if (s){ bItems=slotTargets(s,res).filter(i=>i.q>EPS).map(i=>({k:i.k,q:i.q})); fromSlot=s; } }
+  const aItems=A.items.filter(i=>!i.need);
+  if (!aItems.length || !bItems.length) return null;
+  const ea=itemsEq(aItems), eb=itemsEq(bItems);
+  const diff={}; GROUPS.forEach(g=>{ const d=(ea[g]||0)-(eb[g]||0); if (Math.abs(d)>.02) diff[g]=d; });
+  const ok=!Object.keys(diff).length; const ayer=/\bayer\b/.test(t);
+  const la=aItems.map(lblItem).join(' y '), lb=bItems.map(lblItem).join(' y ');
+  const plural=s=>/ y |^\d+(?!\s*(cda|taza)\b)/.test(s)&&!/^1 /.test(s);
+  let text = ok ? `Sí, quedas tablas. ${cap(la)} ${plural(la)?'valen':'vale'} ${eqSummary(ea)}, igual que ${lb}.`
+    : `No quedas tablas. ${cap(la)} ${plural(la)?'valen':'vale'} ${eqSummary(ea)} y ${lb} ${plural(lb)?'valen':'vale'} ${eqSummary(eb)}.`;
+  if (!ok){ const mas=Object.keys(diff).filter(g=>diff[g]>0).map(g=>eqWord(g,diff[g])), menos=Object.keys(diff).filter(g=>diff[g]<0).map(g=>eqWord(g,-diff[g]));
+    if (mas.length) text+=` Te quedaría de más ${joinY(mas)}.`; if (menos.length) text+=` Te sobraría ${joinY(menos)} a tu favor.`; }
+  const rows=[];
+  if (ayer) rows.push({a:'',n:'Lo de ayer no se puede pagar hoy: tu plan cuenta cada día por separado. Eso queda pendiente con tu nutrióloga; solo te digo si valen lo mismo.'});
+  else if (fromSlot && pendSl(res,fromSlot.id)) rows.push({a:'',n:`Cuando llegue ${theSlot(fromSlot)}, toca “Comí distinto” y quita ${lb}.`});
+  const ans={text, rows, acts:[]};
+  if (!ayer) ans.acts.push({label:'Anotar '+(aItems.length===1?lblItem(aItems[0]):'lo que comí')+' como extra', fn:()=>aiLog('extra', aItems.map(({k,q,mods})=>({k,q,mods})), 'Anotado como extra.')});
+  return ans;
+}
+function aiDiff(before, msg){ const after=compute(st,prefs); const rows=plainLines(before,after,null); const ov=overText(after.over); return {text:msg+(rows.length?' Así queda lo que te falta:':''), rows, d:ov?ov+' Hoy ya no agregues nada más.':''}; }
+function aUndo(s,res){
+  const ss=res.info[s.id]; if (ss.status==='pending') return {text:`${cap(theSlot(s))} ya está pendiente. No hay nada que deshacer.`};
+  const before=compute(st,prefs); const keep=st.slots[s.id]&&st.slots[s.id].carb; st.slots[s.id]=keep?{status:'pending',carb:keep}:{status:'pending'}; ui.focus=s.id; save(); render();
+  return aiDiff(before, `Listo: ${theSlot(s)} vuelve a estar pendiente.`);
+}
+function aSkip(s,res){
+  if (s.id==='helado') return aHelado(res);
+  if (res.info[s.id].status==='skipped') return {text:`${cap(theSlot(s))} ya está marcado como “hoy no”.`};
+  const before=compute(st,prefs); st.slots[s.id]=Object.assign({}, st.slots[s.id]||{}, {status:'skipped'}); ui.focus=null; save(); render();
+  return aiDiff(before, `Listo: hoy sin ${nm(s)}.`);
+}
+function aDelExtra(t,res){
+  if (!st.extras.length) return {text:'Hoy no tienes extras anotados.'};
+  const P=parseFood(t); const ks=P.items.map(i=>i.k); let i=-1;
+  for (let j=st.extras.length-1;j>=0;j--) if (ks.includes(st.extras[j].k)){ i=j; break; }
+  if (i<0 && /extra/.test(t)) i=st.extras.length-1;
+  if (i<0) return null;
+  const before=compute(st,prefs); const e=st.extras.splice(i,1)[0]; save(); render();
+  return aiDiff(before, `Listo, quité ${lblItem(e)} de tus extras.`);
+}
+function aSnackPick(t){
+  const v=/oblea/.test(t)?'oblea':'dw'; prefs.snack=v; save(); render();
+  return {text: v==='oblea' ? 'Listo, tu snack ahora es 1 oblea.' : 'Listo, tu snack ahora son 10 Don’t Worry.'};
+}
+function aLatteSugar(t){ prefs.latteAz=/con azucar/.test(t); save(); render(); return {text: prefs.latteAz ? 'Listo, tu latte va con azúcar.' : 'Listo, tu latte va sin azúcar.'}; }
+function aSetDay(t){
+  const M={lunes:1,martes:2,miercoles:3,jueves:4,viernes:5,sabado:6,domingo:0}; const k=Object.keys(M).find(d=>new RegExp('\\b'+d+'\\b').test(t)); if (k==null) return null;
+  st.dow=M[k]; st.day=typeOf(st.dow); ui.open={}; ui.focus=null; save(); render();
+  const res=compute(st,prefs); const nx=res.slots.find(s=>pendSl(res,s.id));
+  return {text:`Listo, ya tienes el plan del ${k.replace('miercoles','miércoles').replace('sabado','sábado')}.${nx?' Ahora te toca '+theSlot(nx)+'.':''}`};
+}
+function aiAction(t,raw,res){
+  const s=slotFromText(t,res);
+  if (/(deshaz|deshacer|desmarca|no me (lo |la )?comi|no (lo|la) comi|no me (lo |la )?tome|marca(lo|la)? como pendiente|pendiente otra vez|ponlo pendiente|me equivoque)/.test(t) && s) return aUndo(s,res);
+  if (/\b(quita|quitale|borra|elimina|saca|cancela)\b/.test(t)){
+    if (s && !parseFood(raw).items.some(i=>!['helado','oatly'].includes(i.k) || s.id!=='helado')) return aUndo(s,res);
+    const r=aDelExtra(t,res); if (r) return r;
+    if (s) return aUndo(s,res);
+  }
+  if (/(no me voy a (comer|tomar)|no voy a (comer|tomar)|me salto|saltate|hoy sin|hoy no (me )?(como|tomo)|no quiero (el|la))/.test(t) && s) return aSkip(s,res);
+  if (/(snack|colacion)/.test(t) && /(oblea|don ?t ?worry|dont worry)/.test(t) && /(cambia|pon|quiero|prefiero|mejor|cambiar|usa)/.test(t)) return aSnackPick(t);
+  if (/latte/.test(t) && /(con|sin) azucar/.test(t) && /(cambia|pon|quiero|prefiero|lo tomo|va|ponlo)/.test(t)) return aLatteSugar(t);
+  if (/(hoy es|cambia(lo)? (a|al)|pon(me)? el plan (del|de)|usa el plan (del|de)|dame el plan (del|de)|cambia el dia)/.test(t)){ const r=aSetDay(t); if (r) return r; }
+  if (/(reinicia|empieza de nuevo|borra todo|resetea)/.test(t)) return {text:'¿Borro todo lo de hoy y empiezas de cero?', acts:[{label:'Sí, reiniciar el día', fn:()=>{ st=freshDay(); ui.open={}; ui.focus=null; save(); render(); return {text:'Listo, tu día empieza de cero.'}; }}]};
+  return null;
 }
 
 (function icon(){ try{
