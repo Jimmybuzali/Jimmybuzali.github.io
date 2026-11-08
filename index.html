@@ -1251,11 +1251,11 @@ function buildSlots(day, prefs){
     s.push({id:'cena', name:'Cena', kind:'lever', veg:true, carb:'cocido', base:{C:0,P:4,F:1,G:0}});
   } else {
     const kc = day==='kipe' && prefs.kipeAt==='comida', kn = day==='kipe' && !kc;
-    // domingo: la comida es SOLO kipe de arroz; la proteína y la fruta que no trae el kipe se pasan a la cena (el total del día no cambia)
-    s.push(kc ? {id:'comida', name:'Comida de kipe', kind:'lever', kipeOnly:true, carb:'kipeArroz', base:{C:2,P:3,F:0,G:0}}
+    // domingo: la comida es kipe de arroz + blueberries; la proteína que no trae el kipe se pasa a la cena (el total del día no cambia)
+    s.push(kc ? {id:'comida', name:'Comida de kipe', kind:'lever', kipeOnly:true, carb:'kipeArroz', base:{C:2,P:3,F:.5,G:0}}
               : {id:'comida', name:'Comida', kind:'lever', veg:true, carb:'cocido', base:{C:day==='kipe'?1:2,P:6,F:.5,G:0}, note:'Sin aceite.'});
     s.push({id:'cena', name:kn?'Cena de kipe':'Cena', kind:'lever', veg:true, carb:kn?'kipeArroz':'cocido',
-      base: day==='kipe' ? (kc ? {C:1,P:8,F:1,G:1} : {C:2,P:5,F:.5,G:1}) : {C:1,P:5,F:.5,G:1}});
+      base: day==='kipe' ? (kc ? {C:1,P:8,F:.5,G:1} : {C:2,P:5,F:.5,G:1}) : {C:1,P:5,F:.5,G:1}});
   }
   return s;
 }
@@ -1370,7 +1370,7 @@ let prefs = load(PKEY,{snack:'dw', latteAz:false, theme:null});
 let st = load(KEY,null);
 if (!st || st.date!==todayStr()) st = freshDay();
 function slotTargets(sl,res){
-  if (sl.kind==='lever'){ const ct=carbOf(st,sl.id,res); return leverItems(res.lv[sl.id]||sl.base, ct).filter(it=>!(sl.kipeOnly && ct==='kipeArroz' && it.role!=='carb')).filter(it=>!(it.role==='oil'&&sl.id==='comida'&&it.q<EPS)&&!(it.role==='fruit'&&sl.fuera&&it.q<EPS)); }
+  if (sl.kind==='lever'){ const ct=carbOf(st,sl.id,res); return leverItems(res.lv[sl.id]||sl.base, ct).filter(it=>!(sl.kipeOnly && ct==='kipeArroz' && it.role!=='carb' && !(it.role==='fruit' && it.q>EPS))).filter(it=>!(it.role==='oil'&&sl.id==='comida'&&it.q<EPS)&&!(it.role==='fruit'&&sl.fuera&&it.q<EPS)); }
   return sl.items;
 }
 function tostadasTxt(c){ const t=Math.round(c/.5); return t+' tostadas horneadas, o '+frac(c)+' '+(c>1+EPS?'tortillas':'tortilla')+' de maíz'; }
@@ -1557,9 +1557,9 @@ function kipeBoxHTML(sl,res){
   if (K.C<EPS && K.max<EPS) return `<div class="kbox"><p class="kb-h">Hoy ya no cabe kipe</p><p class="kb-s">Se usó en lo que comiste de más.</p>${links}</div>`;
   if (ct==='kipeTam') return `<div class="kbox"><p class="kb-h">Kipe de tamarindo</p><p class="kb-big">${esc(kipeAmt('kipeTam',K.ta))}</p><p class="kb-n">50 g = 1 cereal (confirmado).</p>${links}</div>`;
   const pzRow=(k,l)=>{ const v=kipePz(k); return `<li><span>${l}</span><span class="stepper"><button data-act="kpz" data-k="${k}" data-d="-1" aria-label="Menos">−</button><span class="v">${v?v+' g':'sin pesar'}</span><button data-act="kpz" data-k="${k}" data-d="1" aria-label="Más">+</button></span></li>`; };
-  return `<div class="kbox"><p class="kb-h">¿Cuánto kipe te puedes comer?</p><p class="kb-s">Solo kipe de arroz, ya contando lo que llevas hoy.</p>
+  return `<div class="kbox"><p class="kb-h">¿Cuánto kipe te puedes comer?</p><p class="kb-s">Kipe de arroz con tus blueberries, ya contando lo que llevas hoy.</p>
     <div class="kb-two"><div><p class="kb-big">${esc(kipeAmt('kipeArroz',K.upTo))}</p><p class="kb-l">Lo que te toca</p></div>${K.max>K.upTo+EPS?`<div><p class="kb-big">${esc(kipeAmt('kipeArroz',K.max))}</p><p class="kb-l">Máximo: en la cena ya no comes arroz</p></div>`:''}</div>
-    <p class="kb-n">Lo que no trae el kipe (proteína y blueberries) se pasa solo a tu cena.</p>
+    <p class="kb-n">La proteína que no trae el kipe se pasa sola a tu cena.</p>
     <details class="kb-pz"${ui.kpzOpen?' open':''}><summary>Verlo en piezas: pesa 1 cuadro una vez</summary><ul class="xl nfl">${pzRow('kipeArroz','1 cuadro de kipe pesa')}</ul></details>${links}</div>`;
 }
 function aKipe(res){
@@ -3561,7 +3561,7 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794174210';
+const BUILD='1794174641';
 (function autoUpdate(){
   let busy=false, last=0;
   async function check(){
