@@ -767,6 +767,63 @@ body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
 .ai-tap i{width:7px;height:7px;border-radius:50%;background:var(--peach);animation:pulse 1.8s var(--io) infinite}
 .ai.listening .ai-tap{display:none}
 
+/* =================== v7 (prueba): todos los bloques con color, mesh y brillo =================== */
+.pal-C{--c1:#FFF4E4;--c2:#F4B67E;--c3:#5E3A20;--c4:#170E08;--rim:rgba(255,201,149,.8);--rimg:rgba(255,201,149,.45);--sh:rgba(232,170,110,.5);--acc:#FFE2BE}
+.pal-F{--c1:#E6EAFC;--c2:#7F95EC;--c3:#232E68;--c4:#080B1C;--rim:rgba(142,162,240,.85);--rimg:rgba(142,162,240,.5);--sh:rgba(111,134,232,.55);--acc:#C9D3FF}
+.pal-G{--c1:#FBF6FF;--c2:#A6B2EE;--c3:#3A2E4C;--c4:#110C17;--rim:rgba(242,148,90,.75);--rim2:rgba(142,162,240,.8);--rimg:rgba(255,201,149,.4);--sh:rgba(170,150,215,.55);--acc:#FFD3AE}
+.pal-P{--c1:#FFD2B0;--c2:#EE8A50;--c3:#642A1A;--c4:#160806;--rim:rgba(242,148,90,.85);--rimg:rgba(242,148,90,.5);--sh:rgba(242,148,90,.55);--acc:#FFC7A2}
+.pal-N{--c1:#DCD6FF;--c2:#7E70DA;--c3:#211A4C;--c4:#07061A;--rim:rgba(126,112,218,.8);--rim2:rgba(242,148,90,.6);--rimg:rgba(126,112,218,.45);--sh:rgba(110,96,210,.55);--acc:#D3CCFF}
+.mesh{--ink:#fff;--ink-2:rgba(255,255,255,.8);--ink-3:rgba(255,255,255,.58);--ink-4:rgba(255,255,255,.3);--line:rgba(255,255,255,.12);--line-2:rgba(255,255,255,.22);--sky:#D3DAFF;--sky-2:#E6EAFC;--peach:#FFD3AE;--warn:#FFB49E;
+  --glass:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));--glass-edge:inset 0 1px 0 rgba(255,255,255,.32),inset 0 0 0 1px rgba(255,255,255,.12);
+  color:#fff;color-scheme:dark;border-radius:30px!important;
+  background:
+    radial-gradient(140% 220px at var(--mx) -40px,var(--c2) 0%,var(--c3) 62%,rgba(0,0,0,0) 92%),
+    radial-gradient(62% 160px at -6% 104%,var(--rim) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(62% 160px at 106% 104%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(120% 90% at 50% 55%,var(--c4) 0%,var(--c3) 92%)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.5),inset 0 0 0 1px rgba(255,255,255,.1),inset 0 0 30px 2px var(--rimg),inset 0 -26px 44px -16px var(--rimg),0 34px 60px -30px var(--sh),0 12px 24px -16px rgba(30,20,40,.32)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  animation:mesh 12s ease-in-out infinite alternate}
+.mesh::after{background:radial-gradient(closest-side,rgba(255,255,255,.08),transparent)!important}
+.mesh h2,.mesh .card-t{text-shadow:0 1px 12px rgba(0,0,0,.25)}
+.mesh .seg{background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.mesh .seg .knob{background:rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 4px 14px rgba(0,0,0,.3)}
+.mesh .seg button[aria-pressed="true"],.mesh .seg button.hov{color:#fff}
+.mesh .slide{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.mesh .slide-fill{background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.18))}
+.mesh .slide.undo .thumb{background:radial-gradient(circle at 36% 30%,#3a2a26,#1c1517);color:var(--peach);box-shadow:inset 0 0 0 1px rgba(255,201,149,.55),0 3px 10px rgba(0,0,0,.5)}
+.mesh .cta{background:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.14)}
+.mesh .cta.sec{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.mesh .link.blue,.mesh .backnow{color:var(--acc)}
+.mesh .badge.ok,.mesh .dot.ok{color:var(--acc)}
+.mesh .adj{background:rgba(255,255,255,.1);color:#fff}
+.mesh .adj.warn{background:rgba(255,132,102,.2);color:#FFE2D9}
+.mesh .need{color:#FFC9BB}
+.mesh .it.cur .t{color:#fff}.mesh .it.cur .s{color:var(--acc)}
+.mesh .empty b,.mesh b{color:inherit}
+.empty.mesh span{color:#fff}.empty.mesh b{color:rgba(255,255,255,.65)}
+.mesh .lg-n{background:linear-gradient(180deg,#fff 30%,var(--acc));-webkit-background-clip:text;background-clip:text}
+.mesh .lg-n small{-webkit-text-fill-color:rgba(255,255,255,.5)}
+.mesh .lg-bar{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.mesh .lg-d.incompleto .lg-bar i{background:rgba(255,255,255,.32)}
+.mesh .k.incompleto{background:rgba(255,255,255,.4)}
+.mesh .lg-d.today .lg-l{color:#fff}
+.mesh .lg-d.today .lg-bar{box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.mesh .dl-line{background:rgba(255,255,255,.15)}
+
+
+/* =================== v8: gris Apple con vidrio para lo secundario; color para lo importante =================== */
+.surface:not(.mesh){border-radius:22px;background:rgba(238,238,243,.74);-webkit-backdrop-filter:blur(26px) saturate(1.8);backdrop-filter:blur(26px) saturate(1.8);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.45),0 1px 2px rgba(20,20,40,.04)}
+.surface:not(.mesh) .it{border-bottom-color:rgba(12,12,24,.07)}
+.surface:not(.mesh) .it:last-child{border-bottom:0}
+.log:not(.mesh) .lg-bar{background:rgba(12,12,24,.05);box-shadow:none}
+.empty:not(.mesh) b{color:var(--ink-3)}
+.sec-h h3{font-size:20px;font-weight:600;letter-spacing:-.03em}
+.sec-h h3::before{display:none}
+.sec-h{padding-bottom:4px;margin-top:30px}
+.sec-h::after{display:none}
+
 </style>
 </head>
 <body>
@@ -1270,7 +1327,7 @@ function renderApp(res){
   const animate = S.h!==prevStatus; prevStatus = S.h;
   let h = `<header class="hd" id="hd"><span class="mini">${next?'Ahora: '+esc(next.name):esc(S.h)}</span>${dowHTML()}</header>`;
   h += `<section class="status" id="status">${dateHTML(animate && !firstPaint)}<h1 class="st-h${S.warn?' warn':''}">${S.h.split(' ').map((w,i)=>`<span class="w" style="--i:${i};${animate?'':'animation:none'}">${esc(w)}</span>`).join(' ')}</h1><p class="st-p">${esc(S.p)}</p>${dayLineHTML(res,next,cur)}</section>`;
-  h += cur ? cardHTML(cur,res,next) : `<section class="card surface" id="card" data-status="end"><div class="card-top"><span class="badge ok">${I.dot} Día completo</span></div><h2 class="card-t">Ya anotaste todo.</h2><p class="note">Toca cualquier comida de arriba para verla, corregirla o deshacerla.</p></section>`;
+  h += cur ? cardHTML(cur,res,next) : `<section class="card surface mesh pal-N" id="card" data-status="end"><div class="card-top"><span class="badge ok">${I.dot} Día completo</span></div><h2 class="card-t">Ya anotaste todo.</h2><p class="note">Toca cualquier comida de arriba para verla, corregirla o deshacerla.</p></section>`;
   h += `<div class="sec-h"><h3>Tu día</h3><span>${res.slots.filter(s=>res.info[s.id].status!=='pending').length} de ${res.slots.length}</span></div><div class="day surface">${res.slots.map(sl=>itemHTML(sl,res,next,cur)).join('')}</div>`;
   h += `<div class="sec-h"><h3>Extras de hoy</h3><button class="link blue" data-act="extra">+ Agregar</button></div>`;
   h += st.extras.length
@@ -2318,7 +2375,7 @@ function cardHTML(sl, res, next){
     body = (sl.id==='helado' ? `<p class="note">Se liberó <b>50 g de carbo, 30 g de proteína y 1 cda de aceite</b> y ya están en tu cena.<span class="pend">¿Cambiarlo por blueberries? ${PEND}</span></p>` : `<p class="note">Hoy sin ${esc(sl.name.toLowerCase())}. Se acomodó en lo que sigue.</p>`) + slideHTML('undo', sl.id, 'Desliza: siempre sí', true);
   } else body = slotControls(sl,res) + slotRows(sl,res) + slotNotes(sl,res) + slotActions(sl,res);
   const nav = `<div class="cn-w"><button class="cn" data-act="focusstep" data-d="-1" ${i===0?'disabled':''} aria-label="Comida anterior">${I.chevL}</button><span class="cn-i">${i+1}/${n}</span><button class="cn" data-act="focusstep" data-d="1" ${i===n-1?'disabled':''} aria-label="Comida siguiente">${I.chevR}</button></div>`;
-  return `<section class="card surface" id="card" data-slot="${sl.id}" data-status="${ss.status}"><div class="card-top">${badge}${nav}</div><h2 class="card-t">${esc(sl.name)}</h2>${body}${!isNext && next ? `<button class="backnow" data-act="focus" data-slot="${next.id}">Volver a lo que toca: ${esc(next.name.toLowerCase())}</button>` : ''}</section>`;
+  return `<section class="card surface mesh pal-${({desayuno:"C",latte:"F",snack:"G",comida:"P",cena:"N",helado:"G"})[sl.id]||"P"}" id="card" data-slot="${sl.id}" data-status="${ss.status}"><div class="card-top">${badge}${nav}</div><h2 class="card-t">${esc(sl.name)}</h2>${body}${!isNext && next ? `<button class="backnow" data-act="focus" data-slot="${next.id}">Volver a lo que toca: ${esc(next.name.toLowerCase())}</button>` : ''}</section>`;
 }
 function doUndo(id){
   const res = compute(st,prefs); const sl = res.slots.find(s=>s.id===id);
