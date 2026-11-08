@@ -951,6 +951,23 @@ body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
 .nfprev b{font-weight:400}.nfprev span{color:var(--ink-2)}
 #nfName{flex:1;min-width:0;border:0;background:transparent;outline:none;font-size:16px;padding:11px 0;color:var(--ink)}
 
+
+/* =================== v14: sección Extras de regreso, mejorada =================== */
+.xsec{padding:6px 16px 16px}
+.xempty{width:100%;display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start;text-align:left;padding:14px 0 6px}
+.xempty .dot{margin-top:2px}
+.xempty b{display:block;font-weight:400;font-size:15.5px;color:var(--ink)}
+.xempty small{display:block;font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.4}
+.xsum{font-size:13.5px;color:var(--ink-2);padding:12px 0 2px}
+.xsum b{font-weight:500;color:var(--ink)}
+.xq-h{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:14px 0 8px}
+.xq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.xqc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.7);box-shadow:0 0 0 1px var(--line),0 6px 14px -12px rgba(30,30,80,.4);transition:transform .4s var(--spring)}
+.xqc:active{transform:scale(.95)}
+.xqc span{font-size:14.5px;color:var(--ink)}
+.xqc small{font-size:12px;color:var(--ink-3)}
+.xmore{margin-top:12px}
+
 </style>
 </head>
 <body>
@@ -1456,6 +1473,7 @@ function renderApp(res){
   h += `<section class="status" id="status">${dateHTML(animate && !firstPaint)}<h1 class="st-h${S.warn?' warn':''}">${S.h.split(' ').map((w,i)=>`<span class="w" style="--i:${i};${animate?'':'animation:none'}">${esc(w)}</span>`).join(' ')}</h1><p class="st-p">${esc(S.p)}</p>${dayLineHTML(res,next,cur)}</section>`;
   h += cur ? cardHTML(cur,res,next) : `<section class="card surface mesh pal-N" id="card" data-status="end"><div class="card-top"><span class="badge ok">${I.dot} Día completo</span></div><h2 class="card-t">Ya anotaste todo.</h2><p class="note">Toca cualquier comida de arriba para verla, corregirla o deshacerla.</p></section>`;
   h += `<div class="sec-h"><h3>Tu día</h3><span>${res.slots.filter(s=>res.info[s.id].status!=='pending').length} de ${res.slots.length}${st.extras.length?' · '+st.extras.length+(st.extras.length===1?' extra':' extras'):''}</span></div><div class="day surface">${res.slots.map(sl=>itemHTML(sl,res,next,cur)).join('')}${extraRowsHTML()}</div>`;
+  h += extrasSectionHTML();
   $('#app').innerHTML = h;
   if (animate && !firstPaint) setTimeout(()=>{ const o=document.getElementById('heroOrb'); if (o) o.classList.remove('think'); }, 1400);
 }
@@ -1889,6 +1907,7 @@ document.addEventListener('click', e=>{
     case 'xfree': haptic(); ui.ask={text:'',items:[],unknown:[],parsed:false,slot:null,as:'extra',fixed:true}; ui.sheet='ask'; render(); break;
     case 'xpick': { haptic(); ui.xs=ui.xs||{q:'',items:[],unknown:[]}; const k=b.dataset.k; const ex=ui.xs.items.find(i=>i.k===k); if (ex) ex.q=Math.round((ex.q+CAT[k].st)*1000)/1000; else ui.xs.items.push({k,q:CAT[k].d}); renderSheet(); $('#sheet').scrollTo({top:0,behavior:'smooth'}); break; }
     case 'xi': { const it=ui.xs.items[+b.dataset.i]; if (!it) break; const c=CAT[it.k]; const step=c.u==='g'?10:c.st; it.q=Math.max(0, Math.round((it.q+step*(+b.dataset.d))*1000)/1000); if (it.q>0) it.need=false; if (it.q<=EPS && !it.need) ui.xs.items.splice(+b.dataset.i,1); haptic(); renderSheet(); break; }
+    case 'xquick': { haptic(); const k=b.dataset.k; ui.xs={q:'',items:[],unknown:[],pick:k,pickN:CAT[k].d}; if (ui.sheet){ ui.sheet='xtra'; render(); } else openSheet('xtra', b); break; }
     case 'qopen': { haptic(); ui.xs=ui.xs||{q:'',items:[],unknown:[]}; ui.xs.pick=b.dataset.k; ui.xs.pickN=CAT[b.dataset.k].d; renderSheet(); const t=document.getElementById('qtile'); if (t) t.scrollIntoView({behavior:RM.matches?'auto':'smooth', block:'center'}); break; }
     case 'qclose': haptic(); ui.xs.pick=null; renderSheet(); break;
     case 'qadd': { const k=ui.xs.pick, n=ui.xs.pickN; if (!k) break; const before=compute(st,prefs); st.extras.push({k,q:n}); save(); ui.xs.pick=null; render(); const after=compute(st,prefs); const l=diffLines(before,after,st); toast('Agregado: '+lblItem({k,q:n}), l.length? l.map(x=>human(x.t)).join('. ') : (overText(after.over)||'No cambia nada de lo demás.')); haptic(); break; }
@@ -3037,7 +3056,7 @@ function fixWords(t){
 function smartParse(text){ const fixed=fixWords(text); const p=parseFood(fixed); const items=p.items.map(i=>Object.assign({},i)); const need=items.find(i=>i.need&&i.k==='protG'); if (need){ const other=items.find(i=>i.k==='protG'&&!i.need&&i.q>0); if (other) items.splice(items.indexOf(need),1); else { const gm=fixed.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|grs|gramos)\b/); if (gm){ need.q=parseFloat(gm[1].replace(',','.')); need.need=false; } } } return {fixed, items, unknown:p.unknown}; }
 function extraRowsHTML(){
   return st.extras.map((e,i)=>`<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(e))}</span><span class="s">Extra · ${esc(eqSummary(itemEq(e)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(e))}">Quitar</button></div></div>`).join('')
-    + `<div class="it"><button class="it-h xadd-row" data-act="extra"><span class="dot plus" aria-hidden="true">+</span><span class="t">Agregar un extra</span><span class="s">Escríbelo como sea</span>${I.chevR}</button></div>`;
+    ;
 }
 
 function qStep(k){ const c=CAT[k]; return c.u==='g'?10:c.st; }
@@ -3116,6 +3135,17 @@ CTOOLS.push({name:'add_food', description:'Agrega un alimento nuevo a la tabla c
 })();
 document.addEventListener('input', e=>{ if (e.target.id==='nfName' && ui.nf) ui.nf.n=e.target.value; });
 
+
+
+function extrasSectionHTML(){
+  const n=st.extras.length; const quick=quickKeys().slice(0,4);
+  const chips=`<div class="xq">${quick.map(([k,l])=>`<button class="xqc" data-act="xquick" data-k="${k}"><span>${esc(l.split(/[,(]/)[0].trim())}</span><small>${esc(eqSummary(addEq(Z(),CAT[k].eq,CAT[k].d)))}</small></button>`).join('')}</div>`;
+  let h=`<div class="sec-h"><h3>Extras</h3><button class="link blue" data-act="extra">+ Agregar</button></div><div class="day surface xsec">`;
+  if (!n) h+=`<button class="xempty" data-act="extra"><span class="dot plus" aria-hidden="true">+</span><span><b>¿Comiste o tomaste algo fuera del plan?</b><small>Toca y desliza cuánto, o escríbelo como sea. Se resta solo de lo que te falta.</small></span></button>`;
+  else { const e=itemsEq(st.extras); h+=st.extras.map((x,i)=>`<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(x))}</span><span class="s">${esc(eqSummary(itemEq(x)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(x))}">Quitar</button></div></div>`).join('')+`<p class="xsum">Tus extras de hoy suman <b>${esc(eqSummary(e))}</b>.</p>`; }
+  h+=`<p class="xq-h">Rápido</p>${chips}<button class="cta sec xmore" data-act="extra">${n?'Agregar otro extra':'Buscar o escribir otra cosa'}</button></div>`;
+  return h;
+}
 
 (function icon(){ try{
   const c=document.createElement('canvas'); c.width=c.height=180; const x=c.getContext('2d');
