@@ -968,6 +968,105 @@ body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
 .xqc small{font-size:12px;color:var(--ink-3)}
 .xmore{margin-top:12px}
 
+
+/* =================== v15: salir fácil, bloque claro y transición tipo Apple =================== */
+.sh-x{position:sticky;top:4px;float:right;z-index:6;margin:-30px -8px 0 0;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--ink-2);background:rgba(12,12,24,.06);box-shadow:inset 0 0 0 1px var(--line);transition:transform .35s var(--spring)}
+.sh-x:active{transform:scale(.86)}
+.sh-x::before{content:"";position:absolute;inset:-10px}
+.grab{height:5px;width:40px;margin:0 auto 18px;position:relative}
+.grab::before{content:"";position:absolute;left:-60px;right:-60px;top:-14px;bottom:-14px}
+.tile .dial,.detail .dial{display:grid!important;place-items:center}
+.tile .dial .dmw,.detail .dial .dmw{grid-area:1/1}
+.scrim.black{background:rgba(240,240,246,.72);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6)}
+#detail .detail{box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.12),inset 0 0 24px 2px var(--rimg),inset 0 -20px 32px -12px var(--rimg),0 40px 80px -30px var(--sh),0 16px 32px -20px rgba(30,20,40,.35)}
+#detail .detail.closing > :not(.hole){transition:opacity .18s;opacity:0}
+
+
+/* =================== v16: escribir extras en la sección · tarjeta más luminosa =================== */
+.xfield{display:flex;align-items:center;gap:6px;margin-top:12px;padding:4px 6px 4px 16px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px var(--line-2),0 8px 20px -14px rgba(40,46,110,.35)}
+.xfield:focus-within{box-shadow:0 0 0 1.5px var(--sky),0 8px 20px -14px rgba(40,46,110,.35)}
+#xin{flex:1;min-width:0;border:0;background:transparent;outline:none;font-size:16px;font-weight:300;padding:12px 0;color:var(--ink)}
+.xcam{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--ink-2);cursor:pointer;transition:transform .35s var(--spring),background .2s}
+.xcam:active{transform:scale(.88);background:rgba(12,12,24,.05)}
+#xlive{padding-top:4px}
+.xl-hint{font-size:13px;color:var(--ink-3);padding:10px 2px 2px}
+.xl-note{font-size:14px;color:var(--ink-2);padding:10px 2px 0}
+.xl-img{display:block;width:120px;border-radius:14px;margin-top:10px;box-shadow:0 0 0 1px var(--line)}
+#xlive .xl li.miss{flex-direction:column;align-items:flex-start}
+.xg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.xg button{height:32px;padding:0 12px;border-radius:999px;font-size:13px;background:#fff;box-shadow:0 0 0 1px var(--line-2);transition:transform .3s var(--spring)}
+.xg button:active{transform:scale(.92)}
+.xl-btns{display:flex;flex-direction:column}
+.ximp{font-size:12.5px;color:var(--ink-3);padding:0 0 12px 30px;margin-top:-6px;line-height:1.4}
+.xchg{margin-top:12px;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.65);box-shadow:0 0 0 1px var(--line)}
+.xchg-h{font-size:13px;font-weight:500;color:var(--ink)}
+.xchg ul{list-style:none;margin-top:6px}
+.xchg li{font-size:13.5px;color:var(--ink-2);padding:3px 0 3px 14px;position:relative}
+.xchg li::before{content:"";position:absolute;left:2px;top:11px;width:5px;height:5px;border-radius:50%;background:#F2945A}
+.xchg-ov{font-size:13px;color:#C2452B;margin-top:6px}
+/* tarjeta de la comida: luminosa como los bloques */
+.mesh{background:
+    radial-gradient(150% 62% at var(--mx) -8%,var(--c1) 0%,var(--c2) 38%,rgba(0,0,0,0) 86%),
+    radial-gradient(70% 30% at -6% 104%,var(--rim) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(70% 30% at 106% 104%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(120% 70% at 50% 66%,var(--c3) 0%,var(--c2) 150%)!important}
+.mesh .card-t,.mesh h2,.mesh .amt,.mesh .nm{text-shadow:0 1px 10px rgba(0,0,0,.18)}
+
+/* =================== v17: tarjeta de la comida con Soft UI, mesh y glow como los bloques =================== */
+.mesh{background:
+    radial-gradient(150% 46% at var(--mx) -10%,var(--c1) 0%,var(--c2) 34%,rgba(0,0,0,0) 78%),
+    radial-gradient(45% 22% at 106% 34%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 70%),
+    radial-gradient(45% 24% at -6% 62%,var(--rim) 0%,rgba(0,0,0,0) 70%),
+    radial-gradient(80% 26% at -8% 104%,var(--rim) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(80% 26% at 108% 104%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(95% 62% at 50% 60%,color-mix(in srgb,var(--c3) 82%,#000) 0%,var(--c3) 45%,var(--c2) 125%)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),inset 0 0 0 1px rgba(255,255,255,.14),inset 0 0 44px 4px var(--rimg),inset 0 -34px 54px -18px var(--rimg),0 46px 90px -34px var(--sh),0 0 70px -24px var(--sh),0 14px 28px -18px rgba(30,20,40,.35)!important}
+.mesh > *{position:relative;z-index:1}
+.mesh::before{content:"";position:absolute;z-index:0;left:-25%;right:-25%;top:-26%;height:52%;border-radius:50%;opacity:.5;pointer-events:none;background:radial-gradient(closest-side,var(--c1),rgba(255,255,255,0));animation:glowdrift 11s ease-in-out infinite alternate;will-change:transform}
+.mesh::after{content:"";position:absolute;z-index:0;inset:0;left:0;right:0;top:0;height:auto;border-radius:inherit;pointer-events:none;opacity:.3;mix-blend-mode:overlay;animation:none!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")!important}
+.mesh .rows .row{border-bottom-color:rgba(255,255,255,.14)}
+
+/* v17b: la tarjeta como los bloques — perímetro de color con brillo, centro profundo */
+.mesh{background:
+    radial-gradient(140% 26% at var(--mx) -4%,var(--c1) 0%,var(--c2) 42%,rgba(0,0,0,0) 88%),
+    radial-gradient(140% 22% at 50% 104%,var(--c1) 0%,var(--c2) 38%,rgba(0,0,0,0) 86%),
+    radial-gradient(34% 70% at -6% 50%,var(--rim) 0%,rgba(0,0,0,0) 78%),
+    radial-gradient(34% 70% at 106% 50%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 78%),
+    radial-gradient(82% 80% at 50% 50%,var(--c4) 0%,var(--c3) 58%,var(--c2) 112%)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.65),inset 0 0 0 1px rgba(255,255,255,.16),inset 0 0 56px 10px var(--rimg),inset 0 0 18px 2px rgba(255,255,255,.12),0 46px 90px -34px var(--sh),0 0 80px -26px var(--sh),0 14px 28px -18px rgba(30,20,40,.35)!important}
+.mesh::before{opacity:.55;top:-18%;height:40%}
+
+/* v17c: perímetro de color que se funde suave, sin bordes de caja, y texto legible */
+.mesh{background:
+    radial-gradient(170% 40% at var(--mx) -12%,var(--c1) 0%,var(--c2) 40%,rgba(0,0,0,0) 96%),
+    radial-gradient(170% 32% at 50% 114%,var(--c2) 0%,rgba(0,0,0,0) 92%),
+    radial-gradient(64% 95% at -24% 50%,var(--rim) 0%,rgba(0,0,0,0) 88%),
+    radial-gradient(64% 95% at 124% 50%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 88%),
+    radial-gradient(105% 95% at 50% 50%,color-mix(in srgb,var(--c4) 55%,var(--c3)) 0%,var(--c3) 55%,var(--c2) 118%)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),inset 0 0 0 1px rgba(255,255,255,.14),inset 0 0 140px 0 var(--rimg),0 46px 90px -34px var(--sh),0 0 80px -26px var(--sh),0 14px 28px -18px rgba(30,20,40,.35)!important}
+.mesh::before{opacity:.45;filter:blur(8px)}
+.mesh .card-t,.mesh .amt,.mesh .nm,.mesh .slide-txt,.mesh .link,.mesh .note,.mesh .ed-hint,.mesh .backnow,.mesh .badge,.mesh .cn-i,.mesh .seg button{text-shadow:0 1px 8px rgba(0,0,0,.32),0 0 2px rgba(0,0,0,.18)}
+.mesh .note,.mesh .ed-hint,.mesh .nm small,.mesh .amt small{color:rgba(255,255,255,.86)}
+.mesh .link{color:rgba(255,255,255,.92)}
+.mesh .backnow{color:#fff;font-weight:400}
+.mesh .badge{background:rgba(0,0,0,.18);color:#fff}
+
+/* v17d: la tarjeta usa exactamente la receta de los bloques de "Lo que te queda" */
+.pal-P{--c1:#FFD2B0;--c2:#F2945A;--c3:#6B2E1C;--c4:#170907;--rim:rgba(242,148,90,.85);--rim2:rgba(242,148,90,.85);--rimg:rgba(242,148,90,.55);--sh:rgba(242,148,90,.6);--acc:#FFC7A2}
+.pal-C{--c1:#FFF4E4;--c2:#FFC995;--c3:#6E4526;--c4:#1A100A;--rim:rgba(255,201,149,.85);--rim2:rgba(255,201,149,.85);--rimg:rgba(255,201,149,.5);--sh:rgba(232,170,110,.55);--acc:#FFE2BE}
+.pal-F{--c1:#E6EAFC;--c2:#8EA2F0;--c3:#28336F;--c4:#090C1E;--rim:rgba(142,162,240,.85);--rim2:rgba(142,162,240,.85);--rimg:rgba(142,162,240,.55);--sh:rgba(111,134,232,.6);--acc:#C9D3FF}
+.pal-G{--c1:#FBF6FF;--c2:#B3C0F4;--c3:#3E3150;--c4:#120D18;--rim:rgba(242,148,90,.8);--rim2:rgba(142,162,240,.8);--rimg:rgba(255,201,149,.45);--sh:rgba(170,150,215,.6);--acc:#FFD3AE}
+.mesh{border-radius:32px!important;background:
+    radial-gradient(135% 82% at var(--mx) -14%,var(--c1) 0%,var(--c2) 36%,rgba(0,0,0,0) 80%),
+    radial-gradient(72% 46% at -4% 106%,var(--rim) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(72% 46% at 104% 106%,var(--rim2,var(--rim)) 0%,rgba(0,0,0,0) 72%),
+    radial-gradient(105% 85% at 50% 60%,var(--c4) 0%,var(--c3) 72%,var(--c2) 128%)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.12),inset 0 0 24px 2px var(--rimg),inset 0 -20px 32px -12px var(--rimg),0 30px 54px -26px var(--sh),0 10px 22px -14px rgba(30,20,40,.35)!important}
+.mesh::before{content:"";position:absolute;z-index:0;inset:0;left:0;right:0;top:0;height:auto;border-radius:inherit;pointer-events:none;padding:1px;opacity:.55;filter:none;animation:none;
+  background:linear-gradient(140deg,rgba(255,255,255,.72),rgba(255,255,255,.12) 18%,rgba(255,255,255,0) 42%,rgba(255,255,255,0) 62%,rgba(255,255,255,.14) 84%,rgba(255,255,255,.46));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.mesh::after{opacity:.32!important}
+
 </style>
 </head>
 <body>
@@ -1560,24 +1659,31 @@ function parseFood(text){
   const chunks = norm.split(/,|;|\n|\+|\by\b|\bcon\b|\bmas\b|\btambien\b/).map(s=>s.trim()).filter(Boolean);
   const items=[], unknown=[];
   chunks.forEach(ch=>{
-    const hit = FOOD.find(([re])=>re.test(ch));
-    if (!hit){ if (/[a-z]{3,}/.test(ch) && !/^(me|comi|cene|desayune|voy|a|comer|el|la|los|las|de|un|una)$/.test(ch)) unknown.push(ch); return; }
-    let key = hit[1];
+    const hits=[];
+    FOOD.forEach(([re,key])=>{ const m=ch.match(re); if (m && !hits.some(h=>m.index<h.end && m.index+m[0].length>h.start)) hits.push({key,start:m.index,end:m.index+m[0].length}); });
+    hits.sort((a,b)=>a.start-b.start);
+    if (!hits.length){ if (/[a-z]{3,}/.test(ch) && !/^(me|comi|cene|desayune|voy|a|comer|el|la|los|las|de|un|una)$/.test(ch)) unknown.push(ch); return; }
     const gm = ch.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|grs|gramos)\b/);
     const nm = ch.match(/(\d+(?:[.,]\d+)?)/);
     const wm = Object.keys(NUMW).find(w=>new RegExp('\\b'+w+'\\b').test(ch));
-    let n = gm ? null : nm ? parseFloat(nm[1].replace(',','.')) : wm ? NUMW[wm] : null;
+    const n = gm ? null : nm ? parseFloat(nm[1].replace(',','.')) : wm ? NUMW[wm] : null;
     const grams = gm ? parseFloat(gm[1].replace(',','.')) : null;
     const mods = {}; if (/empaniz|capead|tempura|\bfrit/.test(ch)) mods.emp=true; if (/cremos|\bcrema\b|alfredo/.test(ch)) mods.cremosa=true;
     const push = (k,q,need)=>items.push({k,q,need:!!need,mods:Object.keys(mods).length?mods:undefined,src:ch});
-    if (key==='taco'){ push('tortilla', n||1); push('protG', grams||0, !grams); items[items.length-1].label='Carne de los tacos'; return; }
-    if (key==='rollo'){ push('sushi', (n||1)*8); return; }
-    if (key==='cafe'){ unknown.push('café: '+PEND); return; }
-    if (key==='panArabe'){ push('panArabe', /medio/.test(ch)?1:(n||1)*2); return; }
-    const c = CAT[key];
-    if (c.u==='g'){ push(key, grams||0, !grams); return; }
-    if (key==='blueT'||key==='frutaT'){ push(key, n || 1); return; }
-    push(key, n!=null ? n : c.d);
+    let protDone=false;
+    hits.forEach((hit,hi)=>{
+      const key=hit.key; const q = hi===0 ? n : null;
+      if (key==='protG' && protDone) return;
+      if (key==='taco'){ push('tortilla', q||1); push('protG', grams||0, !grams); items[items.length-1].label='Carne de los tacos'; protDone=true; return; }
+      if (key==='rollo'){ push('sushi', (q||1)*8); protDone=true; return; }
+      if (key==='cafe'){ unknown.push('café: '+PEND); return; }
+      if (key==='panArabe'){ push('panArabe', /medio/.test(ch)?1:(q||1)*2); return; }
+      const c = CAT[key]; if (!c) return;
+      if (c.u==='g'){ push(key, grams||0, !grams); if (key==='protG'){ protDone=true; const w=ch.slice(hit.start,hit.end); items[items.length-1].label=w.charAt(0).toUpperCase()+w.slice(1); } return; }
+      if (key==='blueT'||key==='frutaT'){ push(key, q || 1); return; }
+      if ((c.eq||{}).P) protDone=true;
+      push(key, q!=null ? q : (c.u==='pieza' && !/s$/.test(ch.slice(hit.start,hit.end)) ? 1 : c.d));
+    });
   });
   return {items, unknown};
 }
@@ -1699,8 +1805,8 @@ function sheetHTML(){
 function render(){
   ensureDow();
   const res = compute(st, prefs);
-  renderApp(res); paintLeft(res); paintBar(); recordDay(res); paintLog(); paintExtraBadge();
-  if (ui.sheet){ const s=$('#sheet'); const ae=document.activeElement; const aid=ae&&ae.id&&s.contains(ae)?ae.id:null; const pos=aid&&typeof ae.selectionStart==='number'?ae.selectionStart:null; const top=s.scrollTop; s.innerHTML='<div class="grab"></div>'+sheetHTML(); s.scrollTop=top; if (aid){ const t=document.getElementById(aid); if (t){ t.focus(); if (pos!=null){ try{ t.setSelectionRange(pos,pos); }catch(e){} } } } }
+  const _f=document.activeElement&&document.activeElement.id==='xin'; const _p=_f?document.activeElement.selectionStart:null; renderApp(res); if (_f){ const t=document.getElementById('xin'); if (t){ t.focus(); try{ t.setSelectionRange(_p,_p); }catch(e){} } } paintLeft(res); paintBar(); recordDay(res); paintLog(); paintExtraBadge();
+  if (ui.sheet){ const s=$('#sheet'); const ae=document.activeElement; const aid=ae&&ae.id&&s.contains(ae)?ae.id:null; const pos=aid&&typeof ae.selectionStart==='number'?ae.selectionStart:null; const top=s.scrollTop; s.innerHTML='<div class="grab"></div><button class="sh-x" data-act="close" aria-label="Cerrar"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>'+sheetHTML(); s.scrollTop=top; if (aid){ const t=document.getElementById(aid); if (t){ t.focus(); if (pos!=null){ try{ t.setSelectionRange(pos,pos); }catch(e){} } } } }
   segAnimate(); onScroll();
   if (firstPaint && !RM.matches){ document.body.classList.add('intro'); setTimeout(()=>document.body.classList.remove('intro'), 1200); }
   firstPaint=false; save();
@@ -1725,7 +1831,7 @@ addEventListener('scroll', onScroll, {passive:true});
 /* hojas: nacen del botón que las abre (shared element) y se arrastran para cerrar */
 function openSheet(kind, origin){
   ui.sheet=kind; const s=$('#sheet');
-  const fill=()=>{ s.innerHTML='<div class="grab"></div>'+sheetHTML(); s.scrollTop=0; s.style.setProperty('--drag','0px'); };
+  const fill=()=>{ s.innerHTML='<div class="grab"></div><button class="sh-x" data-act="close" aria-label="Cerrar"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>'+sheetHTML(); s.scrollTop=0; s.style.setProperty('--drag','0px'); };
   if (origin && origin.isConnected && document.startViewTransition && !RM.matches){
     ui.origin=origin; origin.style.viewTransitionName='morph';
     const t=document.startViewTransition(()=>{ origin.style.viewTransitionName=''; fill(); s.classList.add('instant','on'); s.style.viewTransitionName='morph'; $('#scrim').classList.add('on'); });
@@ -1771,11 +1877,11 @@ function openDetail(k){
   $('#scrim').classList.add('on','black');
   if (!tile || RM.matches) return;
   const tr=tile.getBoundingClientRect(), dr=d.getBoundingClientRect();
-  const s=tr.width/dr.width, dx=(tr.left+tr.width/2)-(dr.left+dr.width/2), dy=(tr.top+tr.height/2)-(dr.top+dr.height/2);
-  tile.style.visibility='hidden';
+  const s=tr.width/dr.width, dx=tr.left-dr.left, dy=tr.top-dr.top, cut=Math.max(0, dr.height-tr.height/s);
+  tile.style.visibility='hidden'; d.style.transformOrigin='0 0';
   d.classList.add('opening');
-  const a=d.animate([{transform:`translate(${dx}px,${dy}px) scale(${s})`,opacity:.92},{transform:'translate(0,0) scale(1)',opacity:1}],{duration:640,easing:EASE_SPRING});
-  a.finished.then(()=>d.classList.remove('opening'),()=>{});
+  const a=d.animate([{transform:`translate(${dx}px,${dy}px) scale(${s})`, clipPath:`inset(0px 0px ${cut}px 0px round ${32/s}px)`},{transform:'translate(0px,0px) scale(1)', clipPath:'inset(0px 0px 0px 0px round 36px)'}],{duration:620,easing:'cubic-bezier(.32,.72,0,1)'});
+  a.finished.then(()=>{ d.classList.remove('opening'); d.style.transformOrigin=''; },()=>{});
 }
 function closeDetail(){
   const k=ui.detail; ui.detail=null; const tile=document.querySelector(`.tile[data-k="${k}"]`); const d=$('#detail .detail');
@@ -1786,11 +1892,10 @@ function closeDetail(){
   const ty=(d.style.translate||'0 0').split(' ')[1]||'0px', sk=d.style.scale||'1';
   d.style.translate=''; d.style.scale='';
   const dr=d.getBoundingClientRect(), tr=tile.getBoundingClientRect();
-  const s=tr.width/dr.width, dx=(tr.left+tr.width/2)-(dr.left+dr.width/2), dy=(tr.top+tr.height/2)-(dr.top+dr.height/2);
-  d.classList.add('closing');
-  const a=d.animate([{transform:`translate(0,${ty}) scale(${sk})`,opacity:1},{transform:`translate(${dx}px,${dy}px) scale(${s})`,opacity:1,offset:.86},{transform:`translate(${dx}px,${dy}px) scale(${s})`,opacity:0}],{duration:430,easing:'cubic-bezier(.32,.72,0,1)',fill:'forwards'});
-  setTimeout(()=>{ if (tile) tile.style.visibility=''; }, 360);
-  a.finished.then(finish,finish);
+  const s=tr.width/dr.width, dx=tr.left-dr.left, dy=tr.top-dr.top+(parseFloat(ty)||0)*0, cut=Math.max(0, dr.height-tr.height/s);
+  d.style.transformOrigin='0 0'; d.classList.add('closing');
+  const a=d.animate([{transform:`translate(0px,${ty}) scale(${sk})`, clipPath:'inset(0px 0px 0px 0px round 36px)'},{transform:`translate(${dx}px,${dy}px) scale(${s})`, clipPath:`inset(0px 0px ${cut}px 0px round ${32/s}px)`}],{duration:480,easing:'cubic-bezier(.32,.72,0,1)',fill:'forwards'});
+  a.finished.then(()=>{ if (tile) tile.style.visibility=''; finish(); },finish);
 }
 
 /* bloques: se inclinan con el dedo y la luz de adentro lo sigue */
@@ -1907,10 +2012,14 @@ document.addEventListener('click', e=>{
     case 'xfree': haptic(); ui.ask={text:'',items:[],unknown:[],parsed:false,slot:null,as:'extra',fixed:true}; ui.sheet='ask'; render(); break;
     case 'xpick': { haptic(); ui.xs=ui.xs||{q:'',items:[],unknown:[]}; const k=b.dataset.k; const ex=ui.xs.items.find(i=>i.k===k); if (ex) ex.q=Math.round((ex.q+CAT[k].st)*1000)/1000; else ui.xs.items.push({k,q:CAT[k].d}); renderSheet(); $('#sheet').scrollTo({top:0,behavior:'smooth'}); break; }
     case 'xi': { const it=ui.xs.items[+b.dataset.i]; if (!it) break; const c=CAT[it.k]; const step=c.u==='g'?10:c.st; it.q=Math.max(0, Math.round((it.q+step*(+b.dataset.d))*1000)/1000); if (it.q>0) it.need=false; if (it.q<=EPS && !it.need) ui.xs.items.splice(+b.dataset.i,1); haptic(); renderSheet(); break; }
+    case 'xl-i': { const it=ui.xl.items[+b.dataset.i]; if (!it) break; const c=CAT[it.k]; const step=c.u==='g'?10:c.st; it.q=Math.max(0, Math.round((it.q+step*(+b.dataset.d))*1000)/1000); if (it.q<=EPS) ui.xl.items.splice(+b.dataset.i,1); haptic(); paintXLive(); break; }
+    case 'xl-g': { const it=ui.xl.items[+b.dataset.i]; if (!it) break; it.q=+b.dataset.v; it.need=false; haptic(); paintXLive(); break; }
+    case 'xl-clear': haptic(); ui.xl={q:'', items:[], unknown:[], faltan:[], note:'', busy:false, img:null}; render(); break;
+    case 'xl-add': { const items=ui.xl.items.filter(i=>i.q>EPS).map(({k,q,mods,label})=>label&&!/carne de los tacos/i.test(label)?{k,q,mods,label}:{k,q,mods}); if (!items.length) break; const before=compute(st,prefs); st.extras.push(...items); save(); ui.xl={q:'', items:[], unknown:[], faltan:[], note:'', busy:false, img:null}; render(); const after=compute(st,prefs); const l=diffLines(before,after,st); toast('Agregado: '+items.map(lblItem).join(', '), l.length? 'Se pagó con: '+l.map(x=>human(x.t)).join('. ') : (overText(after.over)||'No cambió nada de tu plan.')); haptic(); break; }
     case 'xquick': { haptic(); const k=b.dataset.k; ui.xs={q:'',items:[],unknown:[],pick:k,pickN:CAT[k].d}; if (ui.sheet){ ui.sheet='xtra'; render(); } else openSheet('xtra', b); break; }
     case 'qopen': { haptic(); ui.xs=ui.xs||{q:'',items:[],unknown:[]}; ui.xs.pick=b.dataset.k; ui.xs.pickN=CAT[b.dataset.k].d; renderSheet(); const t=document.getElementById('qtile'); if (t) t.scrollIntoView({behavior:RM.matches?'auto':'smooth', block:'center'}); break; }
     case 'qclose': haptic(); ui.xs.pick=null; renderSheet(); break;
-    case 'qadd': { const k=ui.xs.pick, n=ui.xs.pickN; if (!k) break; const before=compute(st,prefs); st.extras.push({k,q:n}); save(); ui.xs.pick=null; render(); const after=compute(st,prefs); const l=diffLines(before,after,st); toast('Agregado: '+lblItem({k,q:n}), l.length? l.map(x=>human(x.t)).join('. ') : (overText(after.over)||'No cambia nada de lo demás.')); haptic(); break; }
+    case 'qadd': { const k=ui.xs.pick, n=ui.xs.pickN; if (!k) break; const before=compute(st,prefs); st.extras.push({k,q:n}); save(); ui.xs.pick=null; render(); const after=compute(st,prefs); const l=diffLines(before,after,st); closeSheet(); toast('Agregado: '+lblItem({k,q:n}), l.length? l.map(x=>human(x.t)).join('. ') : (overText(after.over)||'No cambia nada de lo demás.')); haptic(); break; }
     case 'nfopen': { haptic(); const nm=(b.dataset.name||'').replace(/^(un|una|unos|unas|el|la|los|las|\d+)\s+/,''); ui.nf={n:nm,u:'pieza',qty:1,C:0,P:0,F:0,G:0}; ui.nfFrom=ui.sheet||null; if (ui.sheet){ ui.sheet='nf'; renderSheet(); $('#sheet').scrollTo({top:0}); } else openSheet('nf', b); break; }
     case 'nfu': { ui.nf.u=b.dataset.v; if (ui.nf.u==='g' && ui.nf.qty<10) ui.nf.qty=100; if (ui.nf.u!=='g' && ui.nf.qty>=10 && b.dataset.v!=='pieza') ui.nf.qty=1; haptic(); renderSheet(); break; }
     case 'nfqty': { const u=ui.nf.u; const s_=u==='g'?10:(u==='taza'||u==='cda')?.5:1; ui.nf.qty=Math.max(s_, Math.round((ui.nf.qty+s_*(+b.dataset.d))*100)/100); haptic(); renderSheet(); break; }
@@ -1921,7 +2030,7 @@ document.addEventListener('click', e=>{
     case 'xclear': haptic(); ui.xs={q:'',items:[],unknown:[]}; renderSheet(); break;
     case 'xstep': { const c=CAT[ui.xs.sel]; const step=c.u==='g'?10:c.st; ui.xs.n=Math.max(step, Math.round((ui.xs.n+step*(+b.dataset.d))*1000)/1000); haptic(); renderSheet(); break; }
     case 'xcancel': haptic(); ui.xs.sel=null; renderSheet(); break;
-    case 'xadd': { const items=(ui.xs.items||[]).filter(i=>i.q>EPS).map(({k,q,mods})=>({k,q,mods})); if (!items.length) break; const before=compute(st,prefs); st.extras.push(...items); save(); ui.xs={q:'',items:[],unknown:[]}; render(); const after=compute(st,prefs); const l=diffLines(before,after,st); toast('Agregado: '+items.map(lblItem).join(', '), l.length? l.map(x=>human(x.t)).join('. ') : (overText(after.over)||'No cambia nada de lo demás.')); haptic(); break; }
+    case 'xadd': { const items=(ui.xs.items||[]).filter(i=>i.q>EPS).map(({k,q,mods})=>({k,q,mods})); if (!items.length) break; const before=compute(st,prefs); st.extras.push(...items); save(); ui.xs={q:'',items:[],unknown:[]}; render(); const after=compute(st,prefs); const l=diffLines(before,after,st); closeSheet(); toast('Agregado: '+items.map(lblItem).join(', '), l.length? l.map(x=>human(x.t)).join('. ') : (overText(after.over)||'No cambia nada de lo demás.')); haptic(); break; }
     case 'ai-unphoto': ui.ai.img=null; showThumb(); haptic(); break;
     case 'aikey-save': { const k=((document.getElementById('aikey')||{}).value||'').trim(); if (!/^sk-ant-/.test(k)){ toast('Esa clave no se ve bien','Debe empezar con sk-ant-.'); break; } try{ localStorage.setItem(CKEY,k); }catch(x){} CL.hist=[]; renderSheet(); toast('Probando la conexión…','Un momento.'); claudeClient().then(c=>c.messages.create({model:'claude-opus-5-5', max_tokens:64, output_config:{effort:'low'}, messages:[{role:'user', content:'Responde solo: ok'}]})).then(()=>toast('Conectada a Claude','Ya puedes hablarle como quieras.')).catch(x=>{ console.error(x); toast('No se pudo conectar', cError(x)||'Revisa tu internet e inténtalo otra vez.'); }); break; }
     case 'aikey-del': try{ localStorage.removeItem(CKEY); }catch(x){} CL.hist=[]; renderSheet(); toast('Clave quitada','Tu asistente vuelve a funcionar con reglas.'); break;
@@ -2770,7 +2879,7 @@ function aHowTo(t,res){
   for (const [re,txt] of H) if (re.test(t)) return txt ? {text:txt} : aRules();
   return aHelp(res);
 }
-function lblItem(i){ const a=amountText(i.k,i.q); const n=CAT[i.k].n.split(' (')[0]; return new RegExp('\\b'+n.split(' ')[0].slice(0,5),'i').test(a) ? a : a+' de '+low(n); }
+function lblItem(i){ if (i.label) return amountText(i.k,i.q)+' de '+i.label.toLowerCase(); const a=amountText(i.k,i.q); const n=CAT[i.k].n.split(' (')[0]; return new RegExp('\\b'+n.split(' ')[0].slice(0,5),'i').test(a) ? a : a+' de '+low(n); }
 function aSwap(aTxt,bTxt,t,res){
   const A=parseFood(aTxt), B=parseFood(bTxt);
   const hasNum=s=>/\d|\b(un|una|uno|dos|tres|cuatro|cinco|seis|media|medio)\b/.test(s);
@@ -3030,7 +3139,7 @@ function xtraSheet(){
   if (st.extras.length) h+=extrasListHTML();
   return h;
 }
-function renderSheet(){ const s=$('#sheet'); if (!s || !ui.sheet) return; const ae=document.activeElement; const aid=ae&&ae.id&&s.contains(ae)?ae.id:null; const pos=aid&&typeof ae.selectionStart==='number'?ae.selectionStart:null; const top=s.scrollTop; s.innerHTML='<div class="grab"></div>'+sheetHTML(); s.scrollTop=top; if (aid){ const t=document.getElementById(aid); if (t){ t.focus(); if (pos!=null){ try{ t.setSelectionRange(pos,pos); }catch(e){} } } } segAnimate(); }
+function renderSheet(){ const s=$('#sheet'); if (!s || !ui.sheet) return; const ae=document.activeElement; const aid=ae&&ae.id&&s.contains(ae)?ae.id:null; const pos=aid&&typeof ae.selectionStart==='number'?ae.selectionStart:null; const top=s.scrollTop; s.innerHTML='<div class="grab"></div><button class="sh-x" data-act="close" aria-label="Cerrar"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>'+sheetHTML(); s.scrollTop=top; if (aid){ const t=document.getElementById(aid); if (t){ t.focus(); if (pos!=null){ try{ t.setSelectionRange(pos,pos); }catch(e){} } } } segAnimate(); }
 function aiKeyHTML(){
   const on=!!claudeKey();
   return `<p class="h4">Inteligencia artificial</p>
@@ -3138,14 +3247,69 @@ document.addEventListener('input', e=>{ if (e.target.id==='nfName' && ui.nf) ui.
 
 
 function extrasSectionHTML(){
-  const n=st.extras.length; const quick=quickKeys().slice(0,4);
-  const chips=`<div class="xq">${quick.map(([k,l])=>`<button class="xqc" data-act="xquick" data-k="${k}"><span>${esc(l.split(/[,(]/)[0].trim())}</span><small>${esc(eqSummary(addEq(Z(),CAT[k].eq,CAT[k].d)))}</small></button>`).join('')}</div>`;
-  let h=`<div class="sec-h"><h3>Extras</h3><button class="link blue" data-act="extra">+ Agregar</button></div><div class="day surface xsec">`;
-  if (!n) h+=`<button class="xempty" data-act="extra"><span class="dot plus" aria-hidden="true">+</span><span><b>¿Comiste o tomaste algo fuera del plan?</b><small>Toca y desliza cuánto, o escríbelo como sea. Se resta solo de lo que te falta.</small></span></button>`;
-  else { const e=itemsEq(st.extras); h+=st.extras.map((x,i)=>`<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(x))}</span><span class="s">${esc(eqSummary(itemEq(x)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(x))}">Quitar</button></div></div>`).join('')+`<p class="xsum">Tus extras de hoy suman <b>${esc(eqSummary(e))}</b>.</p>`; }
-  h+=`<p class="xq-h">Rápido</p>${chips}<button class="cta sec xmore" data-act="extra">${n?'Agregar otro extra':'Buscar o escribir otra cosa'}</button></div>`;
+  const n=st.extras.length; const quick=quickKeys().slice(0,4); const X=ui.xl;
+  let h=`<div class="sec-h"><h3>Extras</h3>${n?`<span>${n} hoy</span>`:''}</div><div class="day surface xsec">`;
+  h+=`<div class="xfield"><input id="xin" type="text" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="¿Qué comiste o tomaste? Escríbelo como sea" aria-label="Escribe tu extra" value="${esc(X.q)}"><label class="xcam" aria-label="Mandar una foto"><input type="file" accept="image/*" id="xinPhoto" hidden><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h2l1.2-1.8h4.6L13.5 6h2A1.5 1.5 0 0 1 17 7.5v7A1.5 1.5 0 0 1 15.5 16h-11A1.5 1.5 0 0 1 3 14.5z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/><circle cx="10" cy="11" r="2.8" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></label></div>`;
+  h+=`<div id="xlive" aria-live="polite">${xLiveHTML()}</div>`;
+  if (n){
+    h+=`<p class="xq-h">Lo que llevas hoy</p>`+st.extras.map((x,i)=>{ const imp=extraImpact(i); return `<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(x))}</span><span class="s">${esc(eqSummary(itemEq(x)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(x))}">Quitar</button></div><p class="ximp">${imp.length?'Se pagó con: '+esc(imp.join(' · ')):'No cambió nada de tu plan.'}</p></div>`; }).join('');
+    const s0=cl(st); s0.extras=[]; const cur=compute(st,prefs); const all=diffLines(compute(s0,prefs), cur, st).map(l=>human(l.t)); const ov=overText(cur.over);
+    h+=`<div class="xchg"><p class="xchg-h">Así cambió tu dieta por tus extras</p><ul>${all.length?all.map(t=>`<li>${esc(t)}</li>`).join(''):'<li>No cambió nada todavía.</li>'}</ul>${ov?`<p class="xchg-ov">${esc(ov)} Hoy ya no agregues nada más.</p>`:''}</div>`;
+  }
+  h+=`<p class="xq-h">Rápido: toca y desliza</p><div class="xq">${quick.map(([k,l])=>`<button class="xqc" data-act="xquick" data-k="${k}"><span>${esc(l.split(/[,(]/)[0].trim())}</span><small>${esc(eqSummary(addEq(Z(),CAT[k].eq,CAT[k].d)))}</small></button>`).join('')}</div><button class="cta sec xmore" data-act="extra">Ver toda tu tabla</button></div>`;
   return h;
 }
+
+function xLiveHTML(){
+  const X=ui.xl; let h='';
+  if (X.img) h+=`<img class="xl-img" src="data:image/jpeg;base64,${X.img}" alt="Tu foto">`;
+  if (X.busy) return h+`<p class="thinking"><i></i><i></i><i></i>Tu asistente lo está revisando…</p>`;
+  if (X.note) h+=`<p class="xl-note">${esc(X.note)}</p>`;
+  if (!X.items.length && !X.unknown.length) return h || `<p class="xl-hint">Ej. “una tostada de atún y 2 tekilas”. También puedes mandar una foto.</p>`;
+  if (X.items.length){
+    h+=`<ul class="xl">${X.items.map((it,i)=>{ const missing=it.need&&it.q<=EPS; return `<li class="${missing?'miss':''}"><span>${esc(it.label||CAT[it.k].n)}${missing?`<small class="need">Dato insuficiente: ¿cuántos gramos?</small><span class="xg">${[30,60,90,120,150].map(g=>`<button data-act="xl-g" data-i="${i}" data-v="${g}">${g} g</button>`).join('')}</span>`:`<small>${esc(eqSummary(itemEq(it)))}</small>`}</span>${missing?'':`<span class="stepper"><button data-act="xl-i" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${esc(amountText(it.k,it.q))}</span><button data-act="xl-i" data-i="${i}" data-d="1" aria-label="Más">+</button></span>`}</li>`; }).join('')}</ul>`;
+    if (X.faltan && X.faltan.length) h+=`<p class="need">Dato insuficiente: ${esc(X.faltan.join('; '))}</p>`;
+    const items=X.items.filter(i=>i.q>EPS); const missing=X.items.some(i=>i.need&&i.q<=EPS);
+    if (items.length && !missing){
+      h+=`<p class="h4">Lo que trae</p><div class="eqs">${eqChips(itemsEq(items))}</div>`;
+      const res=compute(st,prefs); const B=simFor('extra',items); const lines=diffLines(res,B,st); const ov=overText(B.over);
+      h+=verdictHTML(!Object.keys(B.over).length, ov, lines, 'Si te lo comes, esto cambia de tu dieta:');
+      h+=`<div class="xl-btns"><button class="cta" data-act="xl-add">Me lo comí: agregarlo</button><button class="cta sec" data-act="xl-clear">Solo preguntaba</button></div>`;
+    }
+  }
+  if (X.unknown.length) h+=`<p class="unk">No existe en tu tabla: ${esc(X.unknown.join(', '))}.</p>${claudeKey()?'':`<button class="link blue" data-act="nfopen" data-name="${esc(X.unknown[0])}">Agregarlo como alimento nuevo</button>`}`;
+  return h;
+}
+function paintXLive(){ const el=document.getElementById('xlive'); if (el) el.innerHTML=xLiveHTML(); }
+function xlClaude(text, img){
+  const X=ui.xl; X.busy=true; X.note=''; paintXLive(); const q0=X.q;
+  claudeParse(text, img).then(r=>{ if (text && ui.xl.q!==q0) return; Object.assign(ui.xl,{busy:false, items:r.items, unknown:r.unknown, faltan:r.faltan, note:r.note, src:'claude'}); paintXLive(); })
+    .catch(e=>{ console.error(e); ui.xl.busy=false; ui.xl.note=cError(e)||'No pude conectarme con tu asistente. Revisa tu internet.'; paintXLive(); });
+}
+async function claudeParse(text, img){
+  const client=await claudeClient(); const content=[];
+  if (img) content.push({type:'image', source:{type:'base64', media_type:'image/jpeg', data:img}});
+  content.push({type:'text', text:`Jimmy quiere agregar un extra. ${text?'Escribió: "'+text+'"':'Mandó una foto de lo que comió.'}\nTradúcelo a alimentos de la tabla (usa las keys exactas) con la cantidad en la unidad de cada alimento. Si es algo compuesto, sepáralo en sus partes (una tostada de atún = tostada + proteína). Si falta un dato para saber la cantidad, como los gramos de carne, ponlo en "faltan" y deja esa cantidad en 0. Si algo no existe en la tabla, ponlo en "no_existe". En "nota" escribe una frase corta para Jimmy (por ejemplo qué viste en la foto). Llama a propose_items.`});
+  const r=await client.beta.messages.create({model:'claude-opus-5-5', max_tokens:2000, system:[{type:'text', text:claudeSystem(), cache_control:{type:'ephemeral'}}], tools:[PTOOL], messages:[{role:'user', content}], output_config:{effort:'low'}, betas:['server-side-fallback-2026-07-01'], fallbacks:'default'});
+  if (r.stop_reason==='refusal') return {items:[], unknown:[], faltan:[], note:'Eso no lo puedo revisar.'};
+  const u=r.content.find(b=>b.type==='tool_use' && b.name==='propose_items');
+  if (!u) return {items:[], unknown:[], faltan:[], note:cAnswer(r.content).text};
+  const inp=u.input||{}; const items=[], bad=[];
+  (inp.items||[]).forEach(i=>{ const k=String(i.key||''); const q=Math.max(0,+i.cantidad||0); if (CAT[k] && !CAT[k].disabled) items.push({k, q, need: q<=EPS && CAT[k].u==='g'}); else if (k) bad.push(k); });
+  return {items, unknown:[...(inp.no_existe||[]), ...bad], faltan:inp.faltan||[], note:inp.nota||''};
+}
+function extraImpact(i){ const s2=cl(st); s2.extras.splice(i,1); return diffLines(compute(s2,prefs), compute(st,prefs), st).map(l=>human(l.t)); }
+
+/* ---------- v16: extras escritos en la sección, fotos y qué cambió ---------- */
+ui.xl={q:'', items:[], unknown:[], faltan:[], note:'', busy:false, img:null};
+const PTOOL={name:'propose_items', description:'Propón los alimentos de la tabla que corresponden a lo que comió Jimmy.', input_schema:{type:'object', properties:{items:{type:'array', items:{type:'object', properties:{key:{type:'string'}, cantidad:{type:'number'}}, required:['key','cantidad']}}, faltan:{type:'array', items:{type:'string'}}, no_existe:{type:'array', items:{type:'string'}}, nota:{type:'string'}}, required:['items']}};
+document.addEventListener('input', e=>{ if (e.target.id!=='xin') return; const X=ui.xl; X.q=e.target.value; X.note=''; X.img=null; clearTimeout(FX.t2); clearTimeout(FX.t3);
+  FX.t2=setTimeout(()=>{ const p=smartParse(X.q); X.items=p.items; X.unknown=p.unknown; X.faltan=[]; X.src='local'; paintXLive();
+    if (claudeKey() && X.q.trim().length>2 && (p.unknown.length || !p.items.length)) FX.t3=setTimeout(()=>xlClaude(X.q,null), 650); }, 220); });
+document.addEventListener('keydown', e=>{ if (e.target.id==='xin' && e.key==='Enter'){ e.preventDefault(); e.target.blur(); } });
+document.addEventListener('change', e=>{ if (e.target.id!=='xinPhoto') return; const f=e.target.files&&e.target.files[0]; e.target.value=''; if (!f) return;
+  if (!claudeKey()){ ui.xl.note='Para entender fotos, conecta tu asistente a Claude en “Mis dietas y respaldo”, al final de la página.'; paintXLive(); return; }
+  readPhoto(f).then(b=>{ ui.xl.img=b; xlClaude(ui.xl.q, b); }).catch(()=>{ ui.xl.note='No pude abrir la foto. Intenta con otra.'; paintXLive(); }); });
 
 (function icon(){ try{
   const c=document.createElement('canvas'); c.width=c.height=180; const x=c.getContext('2d');
