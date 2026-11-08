@@ -1113,6 +1113,24 @@ body::before,body::after{display:none !important}
 
 /* Tu registro: rosa de atardecer, su propio color dentro de la misma familia */
 .pal-R{--c1:#FFE8EF;--c2:#E98DAA;--c3:#5C1F3A;--c4:#1A0711;--rim:rgba(233,141,170,.85);--rim2:rgba(255,201,149,.75);--rimg:rgba(233,141,170,.5);--sh:rgba(222,112,152,.5);--acc:#FFD3E0}
+
+/* v19: Tu día y Extras también con el efecto de color, cada uno con su tono */
+.pal-V{--c1:#F0E4FF;--c2:#A985E8;--c3:#34205C;--c4:#0E0819;--rim:rgba(169,133,232,.85);--rim2:rgba(233,141,170,.6);--rimg:rgba(169,133,232,.5);--sh:rgba(150,110,220,.5);--acc:#E2D2FF}
+.pal-T{--c1:#DDF6F4;--c2:#5FC0BC;--c3:#123F44;--c4:#041214;--rim:rgba(95,192,188,.8);--rim2:rgba(142,162,240,.6);--rimg:rgba(95,192,188,.45);--sh:rgba(70,170,166,.5);--acc:#BFF1EE}
+.mesh .xfree,.mesh .xfree.used{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 0 0 1px rgba(255,255,255,.12)}
+.mesh .xfree b{color:#fff}
+.mesh .xchg{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.mesh .xchg-h{color:#fff}
+.day.mesh{position:relative;isolation:isolate;overflow:hidden}
+.day.mesh>*{position:relative;z-index:1}
+.mesh .xfield{background:rgba(255,255,255,.14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 0 1px rgba(255,255,255,.18)!important}
+.mesh #xin{color:#fff}
+.mesh #xin::placeholder{color:rgba(255,255,255,.65)}
+.mesh .xcam{color:#fff}
+.mesh .xqc{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.mesh .xqc small{color:rgba(255,255,255,.7)}
+.mesh .it{border-bottom-color:rgba(255,255,255,.12)}
+.mesh .dot{border-color:rgba(255,255,255,.4)}
 </style>
 </head>
 <body>
@@ -1662,7 +1680,7 @@ function renderApp(res){
   let h = `<header class="hd" id="hd"><span class="mini">${next?'Ahora: '+esc(next.name):esc(S.h)}</span>${dowHTML()}</header>`;
   h += `<section class="status" id="status">${dateHTML(animate && !firstPaint)}<h1 class="st-h${S.warn?' warn':''}">${S.h.split(' ').map((w,i)=>`<span class="w" style="--i:${i};${animate?'':'animation:none'}">${esc(w)}</span>`).join(' ')}</h1><p class="st-p">${esc(S.p)}</p>${dayLineHTML(res,next,cur)}</section>`;
   h += cur ? cardHTML(cur,res,next) : `<section class="card surface mesh pal-N" id="card" data-status="end"><div class="card-top"><span class="badge ok">${I.dot} Día completo</span></div><h2 class="card-t">Ya anotaste todo.</h2><p class="note">Toca cualquier comida de arriba para verla, corregirla o deshacerla.</p></section>`;
-  h += `<div class="sec-h"><h3>Tu día</h3><span>${res.slots.filter(s=>res.info[s.id].status!=='pending').length} de ${res.slots.length}${st.extras.length?' · '+st.extras.length+(st.extras.length===1?' extra':' extras'):''}</span></div><div class="day surface">${res.slots.map(sl=>itemHTML(sl,res,next,cur)).join('')}${extraRowsHTML()}</div>`;
+  h += `<div class="sec-h"><h3>Tu día</h3><span>${res.slots.filter(s=>res.info[s.id].status!=='pending').length} de ${res.slots.length}${st.extras.length?' · '+st.extras.length+(st.extras.length===1?' extra':' extras'):''}</span></div><div class="day surface mesh pal-V">${res.slots.map(sl=>itemHTML(sl,res,next,cur)).join('')}${extraRowsHTML()}</div>`;
   h += extrasSectionHTML();
   $('#app').innerHTML = h;
   if (animate && !firstPaint) setTimeout(()=>{ const o=document.getElementById('heroOrb'); if (o) o.classList.remove('think'); }, 1400);
@@ -3343,7 +3361,7 @@ document.addEventListener('input', e=>{ if (e.target.id==='nfName' && ui.nf) ui.
 
 function extrasSectionHTML(){
   const n=st.extras.length; const quick=quickKeys().slice(0,4); const X=ui.xl;
-  let h=`<div class="sec-h"><h3>Extras</h3>${n?`<span>${n} hoy</span>`:''}</div><div class="day surface xsec">`;
+  let h=`<div class="sec-h"><h3>Extras</h3>${n?`<span>${n} hoy</span>`:''}</div><div class="day surface xsec mesh pal-T">`;
   h+=`<div class="xfield"><input id="xin" type="text" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="¿Qué comiste o tomaste? Escríbelo como sea" aria-label="Escribe tu extra" value="${esc(X.q)}"><label class="xcam" aria-label="Mandar una foto"><input type="file" accept="image/*" id="xinPhoto" hidden><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h2l1.2-1.8h4.6L13.5 6h2A1.5 1.5 0 0 1 17 7.5v7A1.5 1.5 0 0 1 15.5 16h-11A1.5 1.5 0 0 1 3 14.5z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/><circle cx="10" cy="11" r="2.8" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></label></div>`;
   { const left=compute(st,prefs).snackLeft||0; h+=`<p class="xfree ${left>EPS?'':'used'}">${left>EPS?`Snack libre de hoy: te queda <b>${frac(left)} cereal</b> (como ${Math.round(left*20)} Don't Worry). Se paga con eso antes de tocar tu cena.`:'Ya usaste tu snack libre de hoy. Lo que agregues se resta de tus comidas.'}</p>`; }
   h+=`<div id="xlive" aria-live="polite">${xLiveHTML()}</div>`;
@@ -3582,7 +3600,7 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794177279';
+const BUILD='1794177705';
 function verTxt(){ const n=+BUILD; if (!n) return 'de prueba'; const d=new Date(n*1000); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]+', '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 (function autoUpdate(){
   let busy=false, last=0;
