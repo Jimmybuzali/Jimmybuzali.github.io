@@ -1110,6 +1110,9 @@ body::before,body::after{display:none !important}
 
 .xfree,.xfree.used{background:rgba(255,255,255,.7);color:var(--ink-2);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(0,0,0,.05)}
 .xfree b{color:var(--ink)}
+
+/* Tu registro: rosa de atardecer, su propio color dentro de la misma familia */
+.pal-R{--c1:#FFE8EF;--c2:#E98DAA;--c3:#5C1F3A;--c4:#1A0711;--rim:rgba(233,141,170,.85);--rim2:rgba(255,201,149,.75);--rimg:rgba(233,141,170,.5);--sh:rgba(222,112,152,.5);--acc:#FFD3E0}
 </style>
 </head>
 <body>
@@ -2827,7 +2830,7 @@ function paintLog(){
   const wk=weekDays(); const tk=todayStr();
   const past=wk.filter(d=>todayStr(d)<=tk); const ok=past.filter(d=>dState(todayStr(d))==='cumplido').length;
   const sk=streak();
-  const html = `<div class="sec-h"><h3>Tu registro</h3><button class="link blue" data-act="registro">Ver todo</button></div><button class="log surface mesh pal-F" data-act="registro" aria-label="Ver tu registro completo"><span class="lg-top"><span class="lg-s"><span class="lg-n">${sk}</span><span class="lg-t">${sk===1?'día':'días'} seguidos<br>cumpliendo</span></span><span class="lg-s"><span class="lg-n">${ok}<small>/${past.length}</small></span><span class="lg-t">cumplidos<br>esta semana</span></span></span><span class="lg-week">${barsHTML(wk,(d,i)=>'LMMJVSD'[i])}</span><span class="lg-key"><span><i class="k cumplido"></i>Cumpliste</span><span><i class="k pasado"></i>Te pasaste</span><span><i class="k incompleto"></i>Sin terminar</span></span></button>`;
+  const html = `<div class="sec-h"><h3>Tu registro</h3><button class="link blue" data-act="registro">Ver todo</button></div><button class="log surface mesh pal-R" data-act="registro" aria-label="Ver tu registro completo"><span class="lg-top"><span class="lg-s"><span class="lg-n">${sk}</span><span class="lg-t">${sk===1?'día':'días'} seguidos<br>cumpliendo</span></span><span class="lg-s"><span class="lg-n">${ok}<small>/${past.length}</small></span><span class="lg-t">cumplidos<br>esta semana</span></span></span><span class="lg-week">${barsHTML(wk,(d,i)=>'LMMJVSD'[i])}</span><span class="lg-key"><span><i class="k cumplido"></i>Cumpliste</span><span><i class="k pasado"></i>Te pasaste</span><span><i class="k incompleto"></i>Sin terminar</span></span></button>`;
   if (el.dataset.sig===html) return; el.dataset.sig=html; el.innerHTML=html;
   const lg=el.querySelector('.log');
   if (!ui.logIO) ui.logIO=new IntersectionObserver(es=>es.forEach(e=>{ if (e.isIntersecting && e.intersectionRatio>.3){ e.target.classList.add('in'); ui.logIn=true; } }), {threshold:[0,.3,.6]});
@@ -3579,7 +3582,7 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794177024';
+const BUILD='1794177279';
 function verTxt(){ const n=+BUILD; if (!n) return 'de prueba'; const d=new Date(n*1000); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]+', '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 (function autoUpdate(){
   let busy=false, last=0;
