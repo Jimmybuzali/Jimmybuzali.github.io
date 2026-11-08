@@ -1659,7 +1659,7 @@ const FOOD=[
   [/\b(papitas|papas fritas|bolsa de papas|papas)\b/,'papas'],[/\bgalletas?\b/,'galleta'],
   [/\bfrap+(uccino|e)?\b/,'frappe'],[/\bchai\b/,'chai'],
   [/\b(blueberr(y|ies)|moras?|arandanos)\b/,'blueT'],[/\bfresas?\b/,'fresas'],[/\b(manzanas?|naranjas?|duraznos?)\b/,'manzana'],[/\bplatanos?\b/,'platano'],[/\b(fruta|melon|papaya|pina)\b/,'frutaT'],
-  [/\b(aguacates?|guacamole)\b/,'aguacate'],[/\baceitunas?\b/,'aceitunas'],[/\baceite\b/,'aceite'],[/\b(almendras?|nueces)\b/,'almendras'],
+  [/\b(aguacates?|guacamole)\b/,'aguacate'],[/\baceitunas?\b/,'aceitunas'],[/\baceite\b/,'aceite'],[/\b(almendras?)\b/,'almendras'],
   [/\bpan arabe\b/,'panArabe'],[/\bhummus\b/,'hummus'],[/\b(granola|amaranto|avena)\b/,'granola'],[/\b(yogurt|yogur|fage)\b/,'fage'],[/\bcottage\b/,'cottage'],
   [/\bpalomitas\b/,'palomitas'],[/\b(latte|oatly)\b/,'oatly'],[/\bcafe\b/,'cafe'],[/\bpan\b/,'panCaja'],
 ];
@@ -1669,7 +1669,8 @@ function parseFood(text){
   const items=[], unknown=[];
   chunks.forEach(ch=>{
     const hits=[];
-    FOOD.forEach(([re,key])=>{ const m=ch.match(re); if (m && !hits.some(h=>m.index<h.end && m.index+m[0].length>h.start)) hits.push({key,start:m.index,end:m.index+m[0].length}); });
+    const cand=[]; FOOD.forEach(([re,key],ord)=>{ const m=ch.match(re); if (m) cand.push({key,start:m.index,end:m.index+m[0].length,len:m[0].length,ord}); });
+    cand.sort((a,b)=>b.len-a.len || a.ord-b.ord).forEach(c=>{ if (!hits.some(h=>c.start<h.end && c.end>h.start)) hits.push(c); });
     hits.sort((a,b)=>a.start-b.start);
     if (!hits.length){ if (/[a-z]{3,}/.test(ch) && !/^(me|comi|cene|desayune|voy|a|comer|el|la|los|las|de|un|una)$/.test(ch)) unknown.push(ch); return; }
     const gm = ch.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|grs|gramos)\b/);
@@ -3164,12 +3165,11 @@ function vocab(){
 }
 function fixWords(t){
   const V=vocab();
-  return nz(t).split(' ').map(w=>{
-    if (w.length<4 || /\d/.test(w) || FX.stop.has(w) || V.includes(w)) return w;
+  const one=w0=>{ const w=nz(w0); if (!w || w.length<4 || /\d/.test(w) || FX.stop.has(w) || V.includes(w)) return w||w0;
     let best=null, bd=9; for (const v of V){ if (Math.abs(v.length-w.length)>2) continue; const d=lev(w,v); if (d<bd){ bd=d; best=v; } }
     if (!best) return w; if (bd===1 && (best===w+'s' || w===best+'s')) return w;
-    return bd <= (w.length>=5?2:1) ? best : w;
-  }).join(' ');
+    return bd <= (w.length>=5?2:1) ? best : w; };
+  return String(t||'').replace(/[A-Za-zÀ-ÿ']+/g, one);
 }
 function smartParse(text){ const fixed=fixWords(text); const p=parseFood(fixed); const items=p.items.map(i=>Object.assign({},i)); const need=items.find(i=>i.need&&i.k==='protG'); if (need){ const other=items.find(i=>i.k==='protG'&&!i.need&&i.q>0); if (other) items.splice(items.indexOf(need),1); else { const gm=fixed.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|grs|gramos)\b/); if (gm){ need.q=parseFloat(gm[1].replace(',','.')); need.need=false; } } } return {fixed, items, unknown:p.unknown}; }
 function extraRowsHTML(){
@@ -3322,6 +3322,120 @@ document.addEventListener('change', e=>{ if (e.target.id!=='xinPhoto') return; c
   readPhoto(f).then(b=>{ ui.xl.img=b; xlClaude(ui.xl.q, b); }).catch(()=>{ ui.xl.note='No pude abrir la foto. Intenta con otra.'; paintXLive(); }); });
 
 /* ---------- íconos de la app (se dibujan aquí mismo, sin archivos) ---------- */
+/* ---------- alimentos del PDF de equivalentes (cada fila: cantidad que vale 1 equivalente) ---------- */
+/* [key, nombre, unidad, cuánto = 1 equivalente, grupo, palabras (regex), paso] */
+const EQ_PDF=[
+  ['e_mamey','Mamey','pieza',.25,'F','mameys?',.25],
+  ['e_mango','Mango','pieza',.5,'F','mangos?',.5],
+  ['e_pera','Pera','pieza',.5,'F','peras?',.5],
+  ['e_toronja','Toronja','pieza',.5,'F','toronjas?',.5],
+  ['e_jugo','Vaso de jugo','vaso',.5,'F','jugos?',.5],
+  ['e_nectarina','Nectarina','pieza',1,'F','nectarinas?',1],
+  ['e_albaricoque','Albaricoque','pieza',2,'F','albaricoques?|chabacanos?',1],
+  ['e_kiwi','Kiwi','pieza',2,'F','kiwis?',1],
+  ['e_mandarina','Mandarina','pieza',2,'F','mandarinas?',1],
+  ['e_ciruela','Ciruela','pieza',3,'F','ciruelas?',1],
+  ['e_guayaba','Guayaba','pieza',3,'F','guayabas?',1],
+  ['e_higo','Higo','pieza',3,'F','higos?',1],
+  ['e_maracuya','Maracuyá','pieza',3,'F','maracuyas?',1],
+  ['e_dominico','Plátano dominico','pieza',3,'F','dominicos?',1],
+  ['e_lichi','Lichi','pieza',10,'F','lichis?|lychees?',1],
+  ['e_uva','Uvas','pieza',10,'F','uvas?',1],
+  ['e_cereza','Cerezas','pieza',20,'F','cerezas?',1],
+  ['e_frambuesa','Frambuesas','taza',1,'F','frambuesas?',.5],
+  ['e_zarzamora','Zarzamoras','taza',1,'F','zarzamoras?',.5],
+  ['e_sandia','Sandía','taza',1,'F','sandias?',.5],
+  ['e_mermelada','Mermelada','cdita',2,'F','mermeladas?',1],
+  ['e_miel','Miel','cdita',2,'F','miel',1],
+  ['e_deshid','Fruta deshidratada','puñito',1,'F','deshidratad[ao]s?|pasitas?|arandanos secos',1],
+  ['e_bagel','Bagel integral','pieza',.5,'C','bagels?',.5],
+  ['e_bolillo','Bolillo sin migajón','pieza',.5,'C','bolillos?|teleras?',.5],
+  ['e_panhambur','Pan de hamburguesa','pieza',.5,'C','pan de hamburguesa|bollos? para hamburguesa',.5],
+  ['e_camote','Camote','pieza',.5,'C','camotes?',.5],
+  ['e_chapata','Chapata sin migajón','pieza',.5,'C','chapatas?',.5],
+  ['e_dona','Dona','pieza',.5,'C','donas?|donitas?',.5],
+  ['e_elote','Elote','pieza',.5,'C','elotes?',.5],
+  ['e_galletagrande','Galleta dulce grande','pieza',.5,'C','galletas? dulces? grandes?',.5],
+  ['e_hotcake','Hot cake mediano','pieza',.5,'C','hot ?cakes?|hotcakes?|panques?',.5],
+  ['e_medianoche','Pan de medianoche','pieza',.5,'C','medianoches?',.5],
+  ['e_pandulce','Pan dulce pequeño','pieza',.5,'C','pan dulce|conchas?|cuernitos?',.5],
+  ['e_barritas','Paquete de barritas All Bran o Nature Valley','paquete',.5,'C','all ?bran|nature valley',.5],
+  ['e_pastelito','Pastelito mediano (Gansito, Pingüino, Chocorrol)','pieza',.5,'C','gansitos?|pinguinos?|chocorrol(es)?|pastelitos?',.5],
+  ['e_pastel','Rebanada de pastel','rebanada',.5,'C','pastel(es)?',.5],
+  ['e_papasdesh','Bolsita de papas deshidratadas','bolsita',.5,'C','papas deshidratadas',.5],
+  ['e_alegria','Alegría de amaranto pequeña','pieza',1,'C','alegrias?',1],
+  ['e_barrita','Barrita de menos de 100 kcal','pieza',1,'C','barritas?|special k|stila|zucaritas|choco ?krispis',1],
+  ['e_papasescolar','Bolsita de papas escolar','bolsita',1,'C','papas escolar(es)?|bolsita de papas',1],
+  ['e_brownie','Brownie Fiber One','pieza',1,'C','brownies?|fiber one',1],
+  ['e_chocolate','Chocolate de 20 g','pieza',1,'C','chocolates?|conejitos?|carlos v',1],
+  ['e_crepa','Crepa','pieza',1,'C','crepas?',1],
+  ['e_dulce','Dulce mexicano','pieza',1,'C','dulces?|chamoy|tamarindos? dulces?|cocadas?',1],
+  ['e_hotcakechico','Hot cake pequeño','pieza',1,'C','hot ?cakes? pequen|dollar',1],
+  ['e_saladas','Paquete de galletas saladas','paquete',1,'C','galletas? saladas?|saladitas?',1],
+  ['e_salmas','Paquete de Salmas','paquete',1,'C','salmas?',1],
+  ['e_minipastel','Pastelito mini (mini Gansito)','pieza',1,'C','mini ?gansitos?|mini ?pinguinos?',1],
+  ['e_tlacoyo','Tlacoyo','pieza',1,'C','tlacoyos?',1],
+  ['e_tostadatia','Tostada de harina Tía Rosa','pieza',1,'C','tia rosa',1],
+  ['e_waffle','Waffle Eggo mediano','pieza',1,'C','waffles?|wafles?|eggo',1],
+  ['e_galletachica','Galletas dulces pequeñas','pieza',2,'C','galletitas?',1],
+  ['e_panlight','Pan Bimbo light','rebanada',2,'C','pan light|bimbo light',1],
+  ['e_tortamaranto','Tortilla de maíz con amaranto','pieza',2,'C','tortillas? (de maiz )?con amaranto',1],
+  ['e_palitos','Palitos de pan','pieza',3,'C','palitos?',1],
+  ['e_cambray','Papitas cambray','pieza',3,'C','cambray',1],
+  ['e_habaneras','Galletas Habaneras','pieza',4,'C','habaneras?',1],
+  ['e_maria','Galletas María','pieza',4,'C','marias?',1],
+  ['e_gomitas','Gomitas','pieza',5,'C','gomitas?|gomas?',1],
+  ['e_pretzels','Pretzels','pieza',5,'C','pretzels?',1],
+  ['e_cereal','Cereal de caja','taza',.5,'C','cereal de caja|cereal(es)? (de caja|zucaritas|corn ?flakes)|corn ?flakes|froot loops',.5],
+  ['e_esquites','Esquites','taza',.5,'C','esquites?|elote en vaso',.5],
+  ['e_azucar','Azúcar','cda',1,'C','azucar|mascabado',1],
+  ['e_nutella','Nutella','cda',1,'C','nutella',1],
+  ['e_cajeta','Cajeta','cda',1,'C','cajeta',1],
+  ['e_linaza','Linaza','cda',3,'C','linaza',1],
+  ['e_salchicha','Salchicha mediana','pieza',1,'P','salchichas?',1],
+  ['e_jamon','Rebanada de jamón','rebanada',1,'P','jamon(es)?',1],
+  ['e_queso','Rebanada de queso','rebanada',1,'P','rebanadas? de queso|queso panela|queso oaxaca|queso manchego',1],
+  ['e_yogurtlight','Vasito de yogurt light','pieza',1,'P','yogurt light|yoghurt light',1],
+  ['e_pavo','Pechuga de pavo (rebanada)','rebanada',2,'P','pechuga de pavo|rebanadas? de pavo',1],
+  ['e_sardina','Sardinas','pieza',2,'P','sardinas?',1],
+  ['e_almeja','Almejas','pieza',3,'P','almejas?',1],
+  ['e_leche','Leche Lala o Alpura con más proteína','taza',.5,'P','leche',.5],
+  ['e_jocoque','Jocoque','cda',3,'P','jocoque',1],
+  ['e_requeson','Requesón','cda',3,'P','requeson',1],
+  ['e_quesorallado','Queso rallado','cda',6,'P','queso rallado|parmesano',1],
+  ['e_pam','Espolvoreada de PAM','pieza',1,'G','pam',1],
+  ['e_ajonjoli','Ajonjolí','cda',1,'G','ajonjoli',1],
+  ['e_chia','Chía','cda',1,'G','chia',1],
+  ['e_crema','Crema','cda',1,'G','crema(?! de cacahuate)',1],
+  ['e_chantilly','Crema chantilly','cda',1,'G','chantilly',1],
+  ['e_cacahuatecrema','Crema de cacahuate','cda',1,'G','crema de cacahuate|mantequilla de mani|peanut butter',1],
+  ['e_dip','Dip','cda',1,'G','dips?',1],
+  ['e_mantequilla','Mantequilla','cda',1,'G','mantequilla',1],
+  ['e_mayonesa','Mayonesa','cda',1,'G','mayonesa|mayo',1],
+  ['e_pate','Paté','cda',1,'G','pate',1],
+  ['e_pepitas','Pepitas','cda',1,'G','pepitas?',1],
+  ['e_quesocrema','Queso crema','cda',1,'G','queso crema|philadelphia',1],
+  ['e_aderezo','Aderezo','cda',2,'G','aderezos?|vinagreta',1],
+  ['e_coco','Coco rallado','cda',2,'G','coco',1],
+  ['e_guacamole','Guacamole','cda',2,'G','guacamole',1],
+  ['e_avellanas','Avellanas','cda',2,'G','avellanas?',1],
+  ['e_cacahuates','Cacahuates','cda',2,'G','cacahuates?|manies?',1],
+  ['e_macadamias','Macadamias','cda',2,'G','macadamias?',1],
+  ['e_nueces','Nueces','cda',2,'G','nuez|nueces(?! de la india)',1],
+  ['e_marañon','Nueces de la India','cda',2,'G','nueces de la india|marañon|anacardos?',1],
+  ['e_pistaches','Pistaches','cda',2,'G','pistaches?|pistachos?',1],
+];
+(function addEqPDF(){
+  Object.assign(UNIT_PL,{cdita:'cditas', 'puñito':'puñitos', paquete:'paquetes', vaso:'vasos', bolsita:'bolsitas'});
+  EQ_PDF.forEach(([k,n,u,per,g,re,stp])=>{
+    if (CAT[k]) return;
+    CAT[k]={n, u, st:stp, d:per, eq:{[g]:1/per}, cat:{F:'fru',C:'cer',P:'poa',G:'gra'}[g], note:`${dec(per)} ${per===1?u:(UNIT_PL[u]||u)} = 1 ${({F:'fruta',C:'cereal',P:'POA',G:'grasa'})[g]} (tabla de equivalentes)`};
+    FOOD.push([new RegExp('\\b('+re+')\\b'), k]);
+    XALIAS[k]=nz(n)+' '+re.replace(/[^a-z |]/g,'').replace(/\|/g,' ');
+  });
+  FX.V=null; if (typeof CL!=='undefined') CL.sys=null;
+})();
+
 if (st.slots && st.slots.snack){ const sn=st.slots.snack; if (sn.status==='done') st.extras.unshift(...(sn.items||[]).map(i=>({k:i.k,q:i.q}))); delete st.slots.snack; save(); }
 const ICONS=[['uno','1:1 atardecer'],['cromo','1:1 cromado'],['blanco','1:1 blanco'],['esfera','La esfera']];
 const ICON_CACHE={};
