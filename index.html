@@ -1131,6 +1131,13 @@ body::before,body::after{display:none !important}
 .mesh .xqc small{color:rgba(255,255,255,.7)}
 .mesh .it{border-bottom-color:rgba(255,255,255,.12)}
 .mesh .dot{border-color:rgba(255,255,255,.4)}
+
+/* v20: color = significado. Contenedores en gris; colores de nutriente en los textos chicos */
+.q{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;margin-right:6px}
+.q i{width:7px;height:7px;border-radius:50%;flex:none;background:currentColor;opacity:.9}
+.q-P i{background:#E8783E}.q-C i{background:#E9A55C}.q-F i{background:#6F86E8}.q-G i{background:#9C8CE0}
+.mesh .q-P i{background:#FFB48A}.mesh .q-C i{background:#FFD3A0}.mesh .q-F i{background:#B9C5F6}.mesh .q-G i{background:#D9D0FF}
+.mesh{--ink-3:rgba(255,255,255,.74)}
 </style>
 </head>
 <body>
@@ -1680,7 +1687,7 @@ function renderApp(res){
   let h = `<header class="hd" id="hd"><span class="mini">${next?'Ahora: '+esc(next.name):esc(S.h)}</span>${dowHTML()}</header>`;
   h += `<section class="status" id="status">${dateHTML(animate && !firstPaint)}<h1 class="st-h${S.warn?' warn':''}">${S.h.split(' ').map((w,i)=>`<span class="w" style="--i:${i};${animate?'':'animation:none'}">${esc(w)}</span>`).join(' ')}</h1><p class="st-p">${esc(S.p)}</p>${dayLineHTML(res,next,cur)}</section>`;
   h += cur ? cardHTML(cur,res,next) : `<section class="card surface mesh pal-N" id="card" data-status="end"><div class="card-top"><span class="badge ok">${I.dot} Día completo</span></div><h2 class="card-t">Ya anotaste todo.</h2><p class="note">Toca cualquier comida de arriba para verla, corregirla o deshacerla.</p></section>`;
-  h += `<div class="sec-h"><h3>Tu día</h3><span>${res.slots.filter(s=>res.info[s.id].status!=='pending').length} de ${res.slots.length}${st.extras.length?' · '+st.extras.length+(st.extras.length===1?' extra':' extras'):''}</span></div><div class="day surface mesh pal-V">${res.slots.map(sl=>itemHTML(sl,res,next,cur)).join('')}${extraRowsHTML()}</div>`;
+  h += `<div class="sec-h"><h3>Tu día</h3><span>${res.slots.filter(s=>res.info[s.id].status!=='pending').length} de ${res.slots.length}${st.extras.length?' · '+st.extras.length+(st.extras.length===1?' extra':' extras'):''}</span></div><div class="day surface">${res.slots.map(sl=>itemHTML(sl,res,next,cur)).join('')}${extraRowsHTML()}</div>`;
   h += extrasSectionHTML();
   $('#app').innerHTML = h;
   if (animate && !firstPaint) setTimeout(()=>{ const o=document.getElementById('heroOrb'); if (o) o.classList.remove('think'); }, 1400);
@@ -1821,7 +1828,7 @@ function askSheet(){
     if (!A.items.length && !A.unknown.length) h += `<p class="unk">No encontré comida en lo que escribiste. Prueba con algo como “2 tacos de pollo”.</p>`;
     if (A.items.length){
       const pendL = askTarget(res);
-      h += `<div class="res"><ul class="rows">${A.items.map((it,i)=>{ const c=CAT[it.k]; return `<li class="row"><span class="nm">${esc(it.label||c.n)}${it.need?`<small class="need">¿Cuántos gramos? Ajústalo aquí</small>`:`<small>${esc(eqSummary(itemEq(it)))}</small>`}${it.mods&&it.mods.emp?'<small class="need">Empanizado: ya no más cereales hoy</small>':''}${it.mods&&it.mods.cremosa?'<small class="need">Salsa cremosa: quita las 2 grasas</small>':''}</span><span class="stepper"><button data-step="ask" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${amountText(it.k,it.q)}</span><button data-step="ask" data-i="${i}" data-d="1" aria-label="Más">+</button></span></li>`; }).join('')}</ul></div>`;
+      h += `<div class="res"><ul class="rows">${A.items.map((it,i)=>{ const c=CAT[it.k]; return `<li class="row"><span class="nm">${esc(it.label||c.n)}${it.need?`<small class="need">¿Cuántos gramos? Ajústalo aquí</small>`:`<small>${eqHTML((itemEq(it)))}</small>`}${it.mods&&it.mods.emp?'<small class="need">Empanizado: ya no más cereales hoy</small>':''}${it.mods&&it.mods.cremosa?'<small class="need">Salsa cremosa: quita las 2 grasas</small>':''}</span><span class="stepper"><button data-step="ask" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${amountText(it.k,it.q)}</span><button data-step="ask" data-i="${i}" data-d="1" aria-label="Más">+</button></span></li>`; }).join('')}</ul></div>`;
       const needP = A.items.find(it=>it.need && it.k==='protG');
       const tgt = A.as!=='extra' ? A.as : (nextLever(res)||{}).id;
       if (needP && tgt && res.lv[tgt]) h += `<div class="links" style="justify-content:flex-start"><button class="link blue" data-act="fillP" data-slot="${tgt}">Usar lo que te toca en la ${esc(slotName(res,tgt).toLowerCase().replace(' de kipe',''))} (${r5(res.lv[tgt].P*30)} g)</button></div>`;
@@ -1835,7 +1842,7 @@ function askSheet(){
     if (A.unknown.length) h += `<p class="unk">No está en tu tabla: ${esc(A.unknown.join(', '))}. Pregúntale a tu nutrióloga; la app no inventa números.</p>`;
     if (A.items.length) h += `<button class="cta" data-act="asklog">${A.as==='extra'?'Anotarlo como extra':'Me lo comí'}</button><button class="cta sec" data-act="close">Solo preguntaba</button>`;
   }
-  h += `<p class="h4">O búscalo en tu tabla</p><div class="chips">${CATS.map(([k,l])=>`<button class="chip" data-act="askcat" data-v="${k}" aria-pressed="${ui.cat===k}">${l}</button>`).join('')}</div><div class="list">${Object.keys(CAT).filter(k=>CAT[k].cat===ui.cat).map(k=>{ const c=CAT[k]; return `<button class="item" data-act="askadd" data-k="${k}"><span>${esc(c.n)}${c.note?`<small>${esc(c.note)}</small>`:''}</span><span class="e">${c.disabled?'Pendiente':esc(amountText(k,c.d))+'<br>'+esc(eqSummary(addEq(Z(),c.eq,c.d)))}</span></button>`; }).join('')}</div>`;
+  h += `<p class="h4">O búscalo en tu tabla</p><div class="chips">${CATS.map(([k,l])=>`<button class="chip" data-act="askcat" data-v="${k}" aria-pressed="${ui.cat===k}">${l}</button>`).join('')}</div><div class="list">${Object.keys(CAT).filter(k=>CAT[k].cat===ui.cat).map(k=>{ const c=CAT[k]; return `<button class="item" data-act="askadd" data-k="${k}"><span>${esc(c.n)}${c.note?`<small>${esc(c.note)}</small>`:''}</span><span class="e">${c.disabled?'Pendiente':esc(amountText(k,c.d))+'<br>'+eqHTML((addEq(Z(),c.eq,c.d)))}</span></button>`; }).join('')}</div>`;
   return h;
 }
 
@@ -1861,7 +1868,7 @@ function fueraSheet(){
     const sub = p.place==='Tacos' && tort>0 ? `Son ≈ ${r5(P*30/tort)} g de carne por taco. Cada tortilla cuenta: si vienen dobles, son 2.` : p.why;
     h += `<div class="answer"><div class="k">Te puedes comer</div><div class="a">${esc(ans)}</div><div class="d">${esc(sub)}</div></div>`;
     h += p.list.map((cb,i)=>{ const B=simulateSlot(ui.fuera.slot, cb.items); const lines=diffLines(res,B,st).filter(l=>!l.t.startsWith(slotName(res,ui.fuera.slot)+':')); const ov=overText(B.over);
-      return `<div class="opt"><div>${esc(cb.t)}<small>${esc(eqSummary(itemsEq(cb.items)))}${ov?' · '+esc(ov):lines.length?' · '+esc(lines.map(l=>human(l.t)).join('. ')):' · cuadra exacto'}</small></div><button class="pill" data-act="order" data-i="${i}">Lo pedí</button></div>`; }).join('');
+      return `<div class="opt"><div>${esc(cb.t)}<small>${eqHTML((itemsEq(cb.items)))}${ov?' · '+esc(ov):lines.length?' · '+esc(lines.map(l=>human(l.t)).join('. ')):' · cuadra exacto'}</small></div><button class="pill" data-act="order" data-i="${i}">Lo pedí</button></div>`; }).join('');
     h += `<p class="note"><b>Sin capear</b> = que NO esté empanizado ni frito en tempura (no tiene que ver con la soya). <b>Salsa cremosa</b> quita las 2 grasas del día. <b>Empanizado</b>: ya no más cereales y quita la grasa del día.${st.day==='sabado'?' <b>Sábado</b>: sin blueberries, aceite, mantequilla, mayonesa, salsas cremosas ni aguacate.':''}</p>`;
   }
   h += `<p class="h4">¿Comiste otra cosa?</p><button class="cta sec" data-act="askfrom" data-slot="${ui.fuera.slot}">Escribir lo que comí</button>`;
@@ -1876,10 +1883,10 @@ function simulateSlot(id, items){
 /* ---------- comí distinto ---------- */
 function editSheet(){
   const sl = compute(st,prefs).slots.find(s=>s.id===ui.edit.slot);
-  if (ui.edit.picking) return `<h2>Agregar a ${esc(sl.name.toLowerCase())}</h2><p class="sub">Solo aparece lo que viene en tu tabla.</p><div class="chips">${CATS.map(([k,l])=>`<button class="chip" data-act="pcat" data-v="${k}" aria-pressed="${ui.cat===k}">${l}</button>`).join('')}</div><div class="list">${Object.keys(CAT).filter(k=>CAT[k].cat===ui.cat && !CAT[k].disabled).map(k=>`<button class="item" data-act="addpick" data-k="${k}"><span>${esc(CAT[k].n)}</span><span class="e">${esc(eqSummary(addEq(Z(),CAT[k].eq,CAT[k].d)))}</span></button>`).join('')}</div><button class="cta sec" data-act="unpick">Volver</button>`;
+  if (ui.edit.picking) return `<h2>Agregar a ${esc(sl.name.toLowerCase())}</h2><p class="sub">Solo aparece lo que viene en tu tabla.</p><div class="chips">${CATS.map(([k,l])=>`<button class="chip" data-act="pcat" data-v="${k}" aria-pressed="${ui.cat===k}">${l}</button>`).join('')}</div><div class="list">${Object.keys(CAT).filter(k=>CAT[k].cat===ui.cat && !CAT[k].disabled).map(k=>`<button class="item" data-act="addpick" data-k="${k}"><span>${esc(CAT[k].n)}</span><span class="e">${eqHTML((addEq(Z(),CAT[k].eq,CAT[k].d)))}</span></button>`).join('')}</div><button class="cta sec" data-act="unpick">Volver</button>`;
   const E=ui.edit;
   return `<h2>${esc(sl.name)}: lo que comiste</h2><p class="sub">Cambia cantidades, quita o agrega cosas. Lo que falte o sobre se pasa solo a lo que sigue.</p>
-    <div class="res"><ul class="rows">${E.draft.map((it,i)=>`<li class="row${it.q<=EPS?' off':''}"><span class="nm">${esc(CAT[it.k].n)}${it.need?'<small class="need">¿Cuántos gramos? Ajústalo aquí</small>':`<small>${esc(eqSummary(itemEq(it)))}</small>`}</span><span class="stepper"><button data-step="edit" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${amountText(it.k,it.q)}</span><button data-step="edit" data-i="${i}" data-d="1" aria-label="Más">+</button></span></li>`).join('')}${sl.veg?'<li class="row"><span class="nm">Verdura<small>Libre. Si no te la acabas, no se compensa.</small></span><span></span></li>':''}</ul></div>
+    <div class="res"><ul class="rows">${E.draft.map((it,i)=>`<li class="row${it.q<=EPS?' off':''}"><span class="nm">${esc(CAT[it.k].n)}${it.need?'<small class="need">¿Cuántos gramos? Ajústalo aquí</small>':`<small>${eqHTML((itemEq(it)))}</small>`}</span><span class="stepper"><button data-step="edit" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${amountText(it.k,it.q)}</span><button data-step="edit" data-i="${i}" data-d="1" aria-label="Más">+</button></span></li>`).join('')}${sl.veg?'<li class="row"><span class="nm">Verdura<small>Libre. Si no te la acabas, no se compensa.</small></span><span></span></li>':''}</ul></div>
     <p class="h4">¿Comiste algo más?</p>
     <div class="field"><textarea id="edittext" rows="1" placeholder="Ej. 2 tortillas y 1 cda de aceite" aria-label="Agregar otra cosa">${esc(E.text||'')}</textarea><button class="send" data-act="editparse" aria-label="Agregar">${I.send}</button></div>
     ${E.unknown&&E.unknown.length?`<p class="unk">No está en tu tabla: ${esc(E.unknown.join(', '))}. Pregúntale a tu nutrióloga; la app no inventa números.</p>`:''}
@@ -2848,7 +2855,7 @@ function paintLog(){
   const wk=weekDays(); const tk=todayStr();
   const past=wk.filter(d=>todayStr(d)<=tk); const ok=past.filter(d=>dState(todayStr(d))==='cumplido').length;
   const sk=streak();
-  const html = `<div class="sec-h"><h3>Tu registro</h3><button class="link blue" data-act="registro">Ver todo</button></div><button class="log surface mesh pal-R" data-act="registro" aria-label="Ver tu registro completo"><span class="lg-top"><span class="lg-s"><span class="lg-n">${sk}</span><span class="lg-t">${sk===1?'día':'días'} seguidos<br>cumpliendo</span></span><span class="lg-s"><span class="lg-n">${ok}<small>/${past.length}</small></span><span class="lg-t">cumplidos<br>esta semana</span></span></span><span class="lg-week">${barsHTML(wk,(d,i)=>'LMMJVSD'[i])}</span><span class="lg-key"><span><i class="k cumplido"></i>Cumpliste</span><span><i class="k pasado"></i>Te pasaste</span><span><i class="k incompleto"></i>Sin terminar</span></span></button>`;
+  const html = `<div class="sec-h"><h3>Tu registro</h3><button class="link blue" data-act="registro">Ver todo</button></div><button class="log surface" data-act="registro" aria-label="Ver tu registro completo"><span class="lg-top"><span class="lg-s"><span class="lg-n">${sk}</span><span class="lg-t">${sk===1?'día':'días'} seguidos<br>cumpliendo</span></span><span class="lg-s"><span class="lg-n">${ok}<small>/${past.length}</small></span><span class="lg-t">cumplidos<br>esta semana</span></span></span><span class="lg-week">${barsHTML(wk,(d,i)=>'LMMJVSD'[i])}</span><span class="lg-key"><span><i class="k cumplido"></i>Cumpliste</span><span><i class="k pasado"></i>Te pasaste</span><span><i class="k incompleto"></i>Sin terminar</span></span></button>`;
   if (el.dataset.sig===html) return; el.dataset.sig=html; el.innerHTML=html;
   const lg=el.querySelector('.log');
   if (!ui.logIO) ui.logIO=new IntersectionObserver(es=>es.forEach(e=>{ if (e.isIntersecting && e.intersectionRatio>.3){ e.target.classList.add('in'); ui.logIn=true; } }), {threshold:[0,.3,.6]});
@@ -3107,7 +3114,7 @@ function aExtras(res){
   const e=itemsEq(st.extras); const ov=overText(res.over);
   return {text:`Hoy llevas ${st.extras.length} ${st.extras.length===1?'extra':'extras'}, que suman ${eqSummary(e)}.`, rows:st.extras.map(x=>({a:'',n:lblItem(x)})), d: ov ? ov+' Hoy ya no agregues nada más.' : 'Todo lo extra ya se pagó con lo que te falta.', acts:[{label:'Quitar el último', fn:()=>aDelExtra('extra',compute(st,prefs))}]};
 }
-function extrasListHTML(){ return `<p class="h4">Hoy llevas</p><ul class="xl">${st.extras.map((e,i)=>`<li><span>${esc(lblItem(e))}<small>${esc(eqSummary(itemEq(e)))}</small></span><button class="link" data-act="delx" data-i="${i}">Quitar</button></li>`).join('')}</ul>`; }
+function extrasListHTML(){ return `<p class="h4">Hoy llevas</p><ul class="xl">${st.extras.map((e,i)=>`<li><span>${esc(lblItem(e))}<small>${eqHTML((itemEq(e)))}</small></span><button class="link" data-act="delx" data-i="${i}">Quitar</button></li>`).join('')}</ul>`; }
 function paintExtraBadge(){ const b=$('#extrabtn'); if (!b) return; const n=st.extras.length; const h=`<span class="pl" aria-hidden="true">+</span>Extra${n?`<i class="xb">${n}</i>`:''}`; if (b.dataset.h!==h){ b.dataset.h=h; b.innerHTML=h; } }
 
 /* ---------- v11: Claude, fotos y extras fáciles ---------- */
@@ -3232,14 +3239,14 @@ function cError(e){
 function readPhoto(file){ return new Promise((ok,ko)=>{ const img=new Image(); const url=URL.createObjectURL(file); img.onload=()=>{ const m=1280, s=Math.min(1,m/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s); c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg',.82).split(',')[1]); }; img.onerror=()=>{ URL.revokeObjectURL(url); ko(new Error('foto')); }; img.src=url; }); }
 function showThumb(){ const t=$('#aiThumb'); if (!t) return; t.innerHTML = ui.ai.img ? `<img src="data:image/jpeg;base64,${ui.ai.img}" alt="Foto que vas a mandar"><button class="ai-unphoto" data-act="ai-unphoto" aria-label="Quitar foto">×</button>` : ''; t.hidden=!ui.ai.img; aiLayout(); }
 function xMatch(q){ q=nz(q); if (!q) return []; const ws=q.split(' ').filter(w=>w.length>1); return Object.keys(CAT).filter(k=>!CAT[k].disabled).map(k=>({k, s:nz(CAT[k].n+' '+(XALIAS[k]||'')+' '+k)})).filter(o=>ws.every(w=>o.s.includes(w)) || o.s.includes(q)).slice(0,10).map(o=>o.k); }
-function xItemBtn(k,label){ const c=CAT[k]; return `<button class="xbtn${c.custom?' mine':''}" data-act="qopen" data-k="${k}"><span>${esc(label||c.n)}</span><small>${esc(amountText(k,c.d))} · ${esc(eqSummary(addEq(Z(),c.eq,c.d)))}</small></button>`; }
+function xItemBtn(k,label){ const c=CAT[k]; return `<button class="xbtn${c.custom?' mine':''}" data-act="qopen" data-k="${k}"><span>${esc(label||c.n)}</span><small>${esc(amountText(k,c.d))} · ${eqHTML((addEq(Z(),c.eq,c.d)))}</small></button>`; }
 function xtraSheet(){
   const X=ui.xs||(ui.xs={q:'',items:[],unknown:[]}); X.items=X.items||[];
   let h=`<h2>Agregar un extra</h2><p class="sub">Toca algo y desliza cuánto, o escríbelo como sea. Te digo al momento si cabe en tu día.</p>`;
   h+=`<div class="field"><input id="xq" type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ej. 2 tekilas y unas papitas" aria-label="Qué vas a comer" value="${esc(X.q)}"></div>`;
   const items=X.items.filter(i=>i.q>EPS);
   if (X.items.length){
-    h+=`<div class="xres"><p class="h4" style="margin-top:0">Entendí</p><ul class="xl">${X.items.map((it,i)=>`<li><span>${esc(it.label||CAT[it.k].n)}${it.need&&it.q<=EPS?'<small class="need">¿Cuántos gramos? Súbele con +</small>':`<small>${esc(eqSummary(itemEq(it)))}</small>`}</span><span class="stepper"><button data-act="xi" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${esc(amountText(it.k,it.q))}</span><button data-act="xi" data-i="${i}" data-d="1" aria-label="Más">+</button></span></li>`).join('')}</ul>`;
+    h+=`<div class="xres"><p class="h4" style="margin-top:0">Entendí</p><ul class="xl">${X.items.map((it,i)=>`<li><span>${esc(it.label||CAT[it.k].n)}${it.need&&it.q<=EPS?'<small class="need">¿Cuántos gramos? Súbele con +</small>':`<small>${eqHTML((itemEq(it)))}</small>`}</span><span class="stepper"><button data-act="xi" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${esc(amountText(it.k,it.q))}</span><button data-act="xi" data-i="${i}" data-d="1" aria-label="Más">+</button></span></li>`).join('')}</ul>`;
     if (items.length){
       h+=`<p class="h4">Lo que trae</p><div class="eqs">${eqChips(itemsEq(items))}</div>`;
       const res=compute(st,prefs); const B=simFor('extra',items); const lines=diffLines(res,B,st); const ov=overText(B.over);
@@ -3277,7 +3284,7 @@ function fixWords(t){
 }
 function smartParse(text){ const fixed=fixWords(text); const p=parseFood(fixed); const items=p.items.map(i=>Object.assign({},i)); const need=items.find(i=>i.need&&i.k==='protG'); if (need){ const other=items.find(i=>i.k==='protG'&&!i.need&&i.q>0); if (other) items.splice(items.indexOf(need),1); else { const gm=fixed.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|grs|gramos)\b/); if (gm){ need.q=parseFloat(gm[1].replace(',','.')); need.need=false; } } } return {fixed, items, unknown:p.unknown}; }
 function extraRowsHTML(){
-  return st.extras.map((e,i)=>`<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(e))}</span><span class="s">Extra · ${esc(eqSummary(itemEq(e)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(e))}">Quitar</button></div></div>`).join('')
+  return st.extras.map((e,i)=>`<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(e))}</span><span class="s">Extra · ${eqHTML((itemEq(e)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(e))}">Quitar</button></div></div>`).join('')
     ;
 }
 
@@ -3361,16 +3368,16 @@ document.addEventListener('input', e=>{ if (e.target.id==='nfName' && ui.nf) ui.
 
 function extrasSectionHTML(){
   const n=st.extras.length; const quick=quickKeys().slice(0,4); const X=ui.xl;
-  let h=`<div class="sec-h"><h3>Extras</h3>${n?`<span>${n} hoy</span>`:''}</div><div class="day surface xsec mesh pal-T">`;
+  let h=`<div class="sec-h"><h3>Extras</h3>${n?`<span>${n} hoy</span>`:''}</div><div class="day surface xsec">`;
   h+=`<div class="xfield"><input id="xin" type="text" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="¿Qué comiste o tomaste? Escríbelo como sea" aria-label="Escribe tu extra" value="${esc(X.q)}"><label class="xcam" aria-label="Mandar una foto"><input type="file" accept="image/*" id="xinPhoto" hidden><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h2l1.2-1.8h4.6L13.5 6h2A1.5 1.5 0 0 1 17 7.5v7A1.5 1.5 0 0 1 15.5 16h-11A1.5 1.5 0 0 1 3 14.5z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/><circle cx="10" cy="11" r="2.8" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></label></div>`;
-  { const left=compute(st,prefs).snackLeft||0; h+=`<p class="xfree ${left>EPS?'':'used'}">${left>EPS?`Snack libre de hoy: te queda <b>${frac(left)} cereal</b> (como ${Math.round(left*20)} Don't Worry). Se paga con eso antes de tocar tu cena.`:'Ya usaste tu snack libre de hoy. Lo que agregues se resta de tus comidas.'}</p>`; }
+  { const left=compute(st,prefs).snackLeft||0; h+=`<p class="xfree ${left>EPS?'':'used'}">${left>EPS?`Snack libre: te queda <b>${frac(left)} cereal</b> (${Math.round(left*20)} Don't Worry)`:'Snack libre usado: lo que agregues se resta de tus comidas'}</p>`; }
   h+=`<div id="xlive" aria-live="polite">${xLiveHTML()}</div>`;
   if (n){
-    h+=`<p class="xq-h">Lo que llevas hoy</p>`+st.extras.map((x,i)=>{ const imp=extraImpact(i); return `<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(x))}</span><span class="s">${esc(eqSummary(itemEq(x)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(x))}">Quitar</button></div><p class="ximp">${imp.length?'Se pagó con: '+esc(imp.join(' · ')):(itemEq(x).C>0?'Se pagó con tu snack libre.':'No cambió nada de tu plan.')}</p></div>`; }).join('');
+    h+=`<p class="xq-h">Hoy llevas</p>`+st.extras.map((x,i)=>{ const imp=extraImpact(i); return `<div class="it xtr"><div class="it-h xh"><span class="dot plus" aria-hidden="true">+</span><span class="t">${esc(lblItem(x))}</span><span class="s">${eqHTML((itemEq(x)))}</span><button class="link" data-act="delx" data-i="${i}" aria-label="Quitar ${esc(lblItem(x))}">Quitar</button></div></div>`; }).join('');
     const s0=cl(st); s0.extras=[]; const cur=compute(st,prefs); const all=diffLines(compute(s0,prefs), cur, st).map(l=>human(l.t)); const ov=overText(cur.over);
     h+=`<div class="xchg"><p class="xchg-h">Así cambió tu dieta por tus extras</p><ul>${all.length?all.map(t=>`<li>${esc(t)}</li>`).join(''):'<li>No cambió nada todavía.</li>'}</ul>${ov?`<p class="xchg-ov">${esc(ov)} Hoy ya no agregues nada más.</p>`:''}</div>`;
   }
-  h+=`<p class="xq-h">Rápido: toca y desliza</p><div class="xq">${quick.map(([k,l])=>`<button class="xqc" data-act="xquick" data-k="${k}"><span>${esc(l.split(/[,(]/)[0].trim())}</span><small>${esc(eqSummary(addEq(Z(),CAT[k].eq,CAT[k].d)))}</small></button>`).join('')}</div><button class="cta sec xmore" data-act="extra">Ver toda tu tabla</button></div>`;
+  h+=`<p class="xq-h">Rápido</p><div class="xq">${quick.map(([k,l])=>`<button class="xqc" data-act="xquick" data-k="${k}"><span>${esc(l.split(/[,(]/)[0].trim())}</span><small>${eqHTML((addEq(Z(),CAT[k].eq,CAT[k].d)))}</small></button>`).join('')}</div><button class="cta sec xmore" data-act="extra">Ver toda tu tabla</button></div>`;
   return h;
 }
 
@@ -3379,9 +3386,9 @@ function xLiveHTML(){
   if (X.img) h+=`<img class="xl-img" src="data:image/jpeg;base64,${X.img}" alt="Tu foto">`;
   if (X.busy) return h+`<p class="thinking"><i></i><i></i><i></i>Tu asistente lo está revisando…</p>`;
   if (X.note) h+=`<p class="xl-note">${esc(X.note)}</p>`;
-  if (!X.items.length && !X.unknown.length) return h || `<p class="xl-hint">Ej. “una tostada de atún y 2 tekilas”. También puedes mandar una foto.</p>`;
+  if (!X.items.length && !X.unknown.length) return h;
   if (X.items.length){
-    h+=`<ul class="xl">${X.items.map((it,i)=>{ const missing=it.need&&it.q<=EPS; return `<li class="${missing?'miss':''}"><span>${esc(it.label||CAT[it.k].n)}${missing?`<small class="need">Dato insuficiente: ¿cuántos gramos?</small><span class="xg">${[30,60,90,120,150].map(g=>`<button data-act="xl-g" data-i="${i}" data-v="${g}">${g} g</button>`).join('')}</span>`:`<small>${esc(eqSummary(itemEq(it)))}</small>`}</span>${missing?'':`<span class="stepper"><button data-act="xl-i" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${esc(amountText(it.k,it.q))}</span><button data-act="xl-i" data-i="${i}" data-d="1" aria-label="Más">+</button></span>`}</li>`; }).join('')}</ul>`;
+    h+=`<ul class="xl">${X.items.map((it,i)=>{ const missing=it.need&&it.q<=EPS; return `<li class="${missing?'miss':''}"><span>${esc(it.label||CAT[it.k].n)}${missing?`<small class="need">Dato insuficiente: ¿cuántos gramos?</small><span class="xg">${[30,60,90,120,150].map(g=>`<button data-act="xl-g" data-i="${i}" data-v="${g}">${g} g</button>`).join('')}</span>`:`<small>${eqHTML((itemEq(it)))}</small>`}</span>${missing?'':`<span class="stepper"><button data-act="xl-i" data-i="${i}" data-d="-1" aria-label="Menos">−</button><span class="v">${esc(amountText(it.k,it.q))}</span><button data-act="xl-i" data-i="${i}" data-d="1" aria-label="Más">+</button></span>`}</li>`; }).join('')}</ul>`;
     if (X.faltan && X.faltan.length) h+=`<p class="need">Dato insuficiente: ${esc(X.faltan.join('; '))}</p>`;
     const items=X.items.filter(i=>i.q>EPS); const missing=X.items.some(i=>i.need&&i.q<=EPS);
     if (items.length && !missing){
@@ -3412,6 +3419,8 @@ async function claudeParse(text, img){
   (inp.items||[]).forEach(i=>{ const k=String(i.key||''); const q=Math.max(0,+i.cantidad||0); if (CAT[k] && !CAT[k].disabled) items.push({k, q, need: q<=EPS && CAT[k].u==='g'}); else if (k) bad.push(k); });
   return {items, unknown:[...(inp.no_existe||[]), ...bad], faltan:inp.faltan||[], note:inp.nota||''};
 }
+/* equivalentes con el color de su nutriente (el mismo de los bloques de Lo que te queda) */
+function eqHTML(e){ e=e||{}; const out=[]; ['C','P','F','G'].forEach(g=>{ if ((e[g]||0)>EPS) out.push(`<span class="q q-${g}"><i aria-hidden="true"></i>${esc(eqWord(g,e[g]))}</span>`); }); return out.length ? out.join(' ') : '<span class="q">libre</span>'; }
 function extraImpact(i){ const s2=cl(st); s2.extras.splice(i,1); return diffLines(compute(s2,prefs), compute(st,prefs), st).map(l=>human(l.t)); }
 
 /* ---------- v16: extras escritos en la sección, fotos y qué cambió ---------- */
@@ -3600,7 +3609,7 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794177705';
+const BUILD='1794178420';
 function verTxt(){ const n=+BUILD; if (!n) return 'de prueba'; const d=new Date(n*1000); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]+', '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 (function autoUpdate(){
   let busy=false, last=0;
