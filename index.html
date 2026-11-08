@@ -1094,6 +1094,10 @@ body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
 .kb-links .link{color:inherit;font-size:13px;font-weight:500}
 .ver{font-size:12px;opacity:.55;text-align:center;margin:18px 0 4px}
 .kb-pz summary{font-size:13px;font-weight:500;cursor:pointer;padding:6px 2px}
+
+/* botones que se pican: sin bolita ni flecha (eso es solo para lo que se desliza) */
+.cta:not(.sec)::before,.cta:not(.sec)::after{display:none}
+.cta:not(.sec){padding-right:0;font-weight:500}
 </style>
 </head>
 <body>
@@ -3563,7 +3567,7 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794175031';
+const BUILD='1794176348';
 function verTxt(){ const n=+BUILD; if (!n) return 'de prueba'; const d=new Date(n*1000); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]+', '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 (function autoUpdate(){
   let busy=false, last=0;
