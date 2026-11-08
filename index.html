@@ -1072,6 +1072,27 @@ body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
 .xfree{font-size:13px;color:#2F7D4F;background:rgba(47,125,79,.07);border-radius:14px;padding:10px 12px;margin-top:10px;line-height:1.4}
 .xfree b{font-weight:500}
 .xfree.used{color:var(--ink-2);background:rgba(12,12,24,.04)}
+
+/* kipe */
+.kbox{margin:12px 0;padding:14px 14px 8px;border-radius:22px;background:rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1px rgba(255,255,255,.14);color:inherit}
+.kb-h{font-size:17px;font-weight:600;margin:0;color:inherit}
+.kb-s{font-size:13px;opacity:.75;margin:2px 0 10px}
+.kopt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:12px 14px;margin:0 0 8px;border-radius:16px;border:0;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);color:inherit;font:inherit;transition:transform .25s cubic-bezier(.32,.72,0,1),background .25s,box-shadow .25s}
+.kopt b{font-size:18px;font-weight:600}
+.kopt span{font-size:13px;opacity:.8}
+.kopt.on{background:rgba(255,255,255,.26);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75)}
+.kopt:active{transform:scale(.98)}
+.kb-mix{font-size:13px;margin:4px 2px 6px;opacity:.9}
+.kb-n{font-size:12px;opacity:.65;margin:0 2px 6px}
+.kb-no{display:block;font-size:13px;margin:2px 2px 4px;color:inherit;opacity:.85}
+.kb-no.on{font-weight:600;opacity:1}
+.kb-two{display:flex;gap:10px;margin:2px 0 8px}
+.kb-two>div{flex:1;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.kb-big{font-size:26px;font-weight:600;line-height:1.1;margin:0}
+.kb-l{font-size:12px;opacity:.8;margin:4px 0 0}
+.kb-links{display:flex;gap:16px;flex-wrap:wrap;margin:4px 2px 2px}
+.kb-links .link{color:inherit;font-size:13px;font-weight:500}
+.kb-pz summary{font-size:13px;font-weight:500;cursor:pointer;padding:6px 2px}
 </style>
 </head>
 <body>
@@ -1216,6 +1237,7 @@ function itemsEq(items){ const e=Z(); (items||[]).forEach(it=>addEq(e,itemEq(it)
 
 function snackItems(p){ return p.snack==='oblea' ? [{k:'oblea',q:1}] : [{k:'dontworry',q:10}]; }
 
+function kipeAtOf(st){ return st.kipeAt || (st.dow===0 ? 'comida' : 'cena'); }
 function buildSlots(day, prefs){
   const s = [];
   s.push({id:'desayuno', name:'Desayuno', kind:'fixed', veg:true,
@@ -1228,9 +1250,12 @@ function buildSlots(day, prefs){
     s.push({id:'helado', name:'Helado healthy', kind:'fixed', optional:true, items:[{k:'helado',q:1}]});
     s.push({id:'cena', name:'Cena', kind:'lever', veg:true, carb:'cocido', base:{C:0,P:4,F:1,G:0}});
   } else {
-    s.push({id:'comida', name:'Comida', kind:'lever', veg:true, carb:'cocido', base:{C:day==='kipe'?1:2,P:6,F:.5,G:0}, note:'Sin aceite.'});
-    s.push({id:'cena', name:day==='kipe'?'Cena de kipe':'Cena', kind:'lever', veg:true, carb:day==='kipe'?'kipeArroz':'cocido',
-      base: day==='kipe' ? {C:2,P:5,F:.5,G:1} : {C:1,P:5,F:.5,G:1}});
+    const kc = day==='kipe' && prefs.kipeAt==='comida', kn = day==='kipe' && !kc;
+    // domingo: la comida es SOLO kipe de arroz; la proteína y la fruta que no trae el kipe se pasan a la cena (el total del día no cambia)
+    s.push(kc ? {id:'comida', name:'Comida de kipe', kind:'lever', kipeOnly:true, carb:'kipeArroz', base:{C:2,P:3,F:0,G:0}}
+              : {id:'comida', name:'Comida', kind:'lever', veg:true, carb:'cocido', base:{C:day==='kipe'?1:2,P:6,F:.5,G:0}, note:'Sin aceite.'});
+    s.push({id:'cena', name:kn?'Cena de kipe':'Cena', kind:'lever', veg:true, carb:kn?'kipeArroz':'cocido',
+      base: day==='kipe' ? (kc ? {C:1,P:8,F:1,G:1} : {C:2,P:5,F:.5,G:1}) : {C:1,P:5,F:.5,G:1}});
   }
   return s;
 }
@@ -1248,7 +1273,7 @@ function leverItems(lv, carbType){
 
 const SNACK_FREE = .5;
 function compute(st, prefs, hyp){
-  const slots = buildSlots(st.day, prefs);
+  const slots = buildSlots(st.day, Object.assign({}, prefs, {kipeAt:kipeAtOf(st)}));
   const extras = (st.extras||[]).concat(hyp?[hyp]:[]);
   const eaten = Z(); const pendFixed = Z();
   let noCereal = false;
@@ -1345,7 +1370,7 @@ let prefs = load(PKEY,{snack:'dw', latteAz:false, theme:null});
 let st = load(KEY,null);
 if (!st || st.date!==todayStr()) st = freshDay();
 function slotTargets(sl,res){
-  if (sl.kind==='lever'){ const ct=carbOf(st,sl.id,res); return leverItems(res.lv[sl.id]||sl.base, ct).filter(it=>!(it.role==='oil'&&sl.id==='comida'&&it.q<EPS)&&!(it.role==='fruit'&&sl.fuera&&it.q<EPS)); }
+  if (sl.kind==='lever'){ const ct=carbOf(st,sl.id,res); return leverItems(res.lv[sl.id]||sl.base, ct).filter(it=>!(sl.kipeOnly && ct==='kipeArroz' && it.role!=='carb')).filter(it=>!(it.role==='oil'&&sl.id==='comida'&&it.q<EPS)&&!(it.role==='fruit'&&sl.fuera&&it.q<EPS)); }
   return sl.items;
 }
 function tostadasTxt(c){ const t=Math.round(c/.5); return t+' tostadas horneadas, o '+frac(c)+' '+(c>1+EPS?'tortillas':'tortilla')+' de maíz'; }
@@ -1516,6 +1541,36 @@ function slotRows(sl, res){
   if (sl.veg) h += VEG;
   return h + '</ul>';
 }
+/* ---------- cuánto kipe te toca ---------- */
+function kipePz(k){ return ((prefs.kipePz||{})[k])||0; }
+function kipeAmt(k,g){ const pz=kipePz(k); return r5(g)+' g'+(pz ? ` ≈ ${frac(Math.max(0,Math.floor(g/pz*2)/2))} ${g/pz>1+EPS?'piezas':'pieza'}` : ''); }
+function kipeCalc(sl,res){
+  const lv=res.lv[sl.id]||sl.base; const C=lv.C, P=lv.P;
+  const upTo=r5(C*100); let max=upTo;
+  for (let q=Math.ceil((C+((res.lv.cena&&sl.id!=='cena')?res.lv.cena.C:0))*10)*10; q>upTo; q-=10){ if (!isOver(simFor(sl.id,[{k:'kipeArroz',q}]))){ max=q; break; } }
+  return {C, P, upTo, max, ta:C*50};
+}
+function kipeBoxHTML(sl,res){
+  const ss=res.info[sl.id]; if (ss && ss.status==='done') return '';
+  const K=kipeCalc(sl,res); const ct=carbOf(st,sl.id,res);
+  const links=`<div class="kb-links">${ct!=='kipeArroz'?`<button class="link" data-act="carb" data-slot="${sl.id}" data-v="kipeArroz">Volver a kipe de arroz</button>`:`<button class="link" data-act="carb" data-slot="${sl.id}" data-v="kipeTam">Fue de tamarindo</button>`}</div>`;
+  if (K.C<EPS && K.max<EPS) return `<div class="kbox"><p class="kb-h">Hoy ya no cabe kipe</p><p class="kb-s">Se usó en lo que comiste de más.</p>${links}</div>`;
+  if (ct==='kipeTam') return `<div class="kbox"><p class="kb-h">Kipe de tamarindo</p><p class="kb-big">${esc(kipeAmt('kipeTam',K.ta))}</p><p class="kb-n">50 g = 1 cereal (confirmado).</p>${links}</div>`;
+  const pzRow=(k,l)=>{ const v=kipePz(k); return `<li><span>${l}</span><span class="stepper"><button data-act="kpz" data-k="${k}" data-d="-1" aria-label="Menos">−</button><span class="v">${v?v+' g':'sin pesar'}</span><button data-act="kpz" data-k="${k}" data-d="1" aria-label="Más">+</button></span></li>`; };
+  return `<div class="kbox"><p class="kb-h">¿Cuánto kipe te puedes comer?</p><p class="kb-s">Solo kipe de arroz, ya contando lo que llevas hoy.</p>
+    <div class="kb-two"><div><p class="kb-big">${esc(kipeAmt('kipeArroz',K.upTo))}</p><p class="kb-l">Lo que te toca</p></div>${K.max>K.upTo+EPS?`<div><p class="kb-big">${esc(kipeAmt('kipeArroz',K.max))}</p><p class="kb-l">Máximo: en la cena ya no comes arroz</p></div>`:''}</div>
+    <p class="kb-n">Lo que no trae el kipe (proteína y blueberries) se pasa solo a tu cena.</p>
+    <details class="kb-pz"${ui.kpzOpen?' open':''}><summary>Verlo en piezas: pesa 1 cuadro una vez</summary><ul class="xl nfl">${pzRow('kipeArroz','1 cuadro de kipe pesa')}</ul></details>${links}</div>`;
+}
+function aKipe(res){
+  const sl=res.slots.find(s=>/de kipe/.test(s.name));
+  if (!sl) return {text:'Hoy no es día de kipe en tu plan (viernes y domingo). Si hoy sí hay kipe, cambia el día arriba a domingo.'};
+  const ss=res.info[sl.id]; if (ss && ss.status==='done') return {text:`Ya anotaste tu ${nm(sl)} de hoy.`};
+  const K=kipeCalc(sl,res); if (K.C<EPS && K.max<EPS) return {text:`Hoy ya no cabe kipe en tu ${nm(sl)}.`};
+  return {text:`En tu ${nm(sl)} te toca ${kipeAmt('kipeArroz',K.upTo)} de kipe de arroz.`+(K.max>K.upTo+EPS?` Si en la cena no comes arroz, puedes llegar hasta ${kipeAmt('kipeArroz',K.max)}.`:''),
+    d:'Lo que no trae el kipe se pasa a tu cena. Valor del kipe de arroz: estimado, PENDIENTE con tu nutrióloga.',
+    acts:[{label:`Me comí ${r5(K.upTo)} g`, fn:()=>aiLog(sl.id,[{k:'kipeArroz',q:K.upTo}],`Anotado: ${r5(K.upTo)} g de kipe como tu ${nm(sl)}.`)}]};
+}
 function segHTML(act, opts, cur, extra='', cls=''){
   const i = Math.max(0, opts.findIndex(o=>o[0]===cur)); const n = opts.length;
   return `<div class="seg ${cls}" role="group">${opts.map(o=>`<button data-act="${act}" data-v="${o[0]}" ${extra} aria-pressed="${o[0]===cur}">${o[1]}</button>`).join('')}<span class="knob" style="width:calc((100% - 6px) / ${n});transform:translateX(${i*100}%)"></span></div>`;
@@ -1523,6 +1578,13 @@ function segHTML(act, opts, cur, extra='', cls=''){
 function slotControls(sl, res){
   if (sl.id==='snack') return segHTML('snack', [['dw',"10 Don't Worry"],['oblea','1 oblea']], prefs.snack==='oblea'?'oblea':'dw','','full');
   if (sl.id==='latte') return segHTML('latteaz', [['0','Sin azúcar'],['1','Con azúcar']], prefs.latteAz?'1':'0','','full');
+  if (st.day==='kipe' && sl.kind==='lever' && !sl.fuera){
+    const isK=/de kipe/.test(sl.name);
+    const opts = isK ? [['kipeArroz','Kipe charola'],['kipeTam','Kipe tamarindo'],['cocido','Arroz o pasta']] : [['cocido','Arroz o pasta'],['kipeTam','Kipe tamarindo']];
+    const ss=res.info[sl.id];
+    if (isK && !(ss && ss.status==='done')) return segHTML('kipeat', [['comida','Kipe en la comida'],['cena','Kipe en la cena']], kipeAtOf(st), '', 'full') + kipeBoxHTML(sl,res);
+    return segHTML('carb', opts, carbOf(st,sl.id,res), `data-slot="${sl.id}"`, 'full');
+  }
   if (sl.id==='cena' || (sl.id==='comida' && !sl.fuera && st.day==='kipe')){
     const opts = sl.id==='cena' ? [['cocido', st.day==='sabado'?'Arroz':'Arroz o pasta'],['kipeArroz','Kipe arroz'],['kipeTam','Kipe tamarindo']] : [['cocido','Arroz o pasta'],['kipeTam','Kipe tamarindo']];
     return segHTML('carb', opts, carbOf(st,sl.id,res), `data-slot="${sl.id}"`, 'full');
@@ -1538,7 +1600,7 @@ function slotNotes(sl, res){
     h += `<p class="adj">${helado?'Aquí va lo que liberó el helado. ':''}Lo azul ya está ajustado por lo que comiste hoy.</p>`;
   }
   const ct = carbOf(st,sl.id,res);
-  if (sl.id==='cena' && (ct==='kipeArroz'||ct==='kipeTam') && res.lv.cena && res.lv.cena.C<EPS) h += `<p class="note"><b>Hoy no cabe kipe.</b>${st.day==='sabado'?' Kipe y helado no caben juntos.':''}</p>`;
+  if (sl.id==='cena' && !/de kipe/.test(sl.name) && (ct==='kipeArroz'||ct==='kipeTam') && res.lv.cena && res.lv.cena.C<EPS) h += `<p class="note"><b>Hoy no cabe kipe.</b>${st.day==='sabado'?' Kipe y helado no caben juntos.':''}</p>`;
   if (sl.note) h += `<p class="note">${esc(sl.note)}</p>`;
   if (sl.id==='cena') h += `<p class="note">El aceite va en la cena para pagar aquí cualquier exceso.<span class="pend">Si el aceite puede ir en la cena: ${PEND}</span></p>`;
   if (sl.id==='helado') h += `<p class="note">Si no te lo comes, se libera para tu cena: 50 g de carbo, 30 g de proteína y 1 cda de aceite.</p>`;
@@ -1650,7 +1712,7 @@ const FOOD=[
   [/\brollos?\b/,'rollo'],[/\b(sushi|nigiris?|makis?)\b/,'sushi'],
   [/\bcamaron(es)?\b/,'camaron'],[/\bhuevos?\b/,'huevo'],[/\bclaras?\b/,'claras'],
   [/\bobleas?\b/,'oblea'],[/\bdon'?t ?worry\b/,'dontworry'],[/\bhelados?\b/,'helado'],
-  [/\btamarindo\b/,'kipeTam'],[/\bkipes?\b/,'kipeArroz'],
+  [/\btamarindo\b/,'kipeTam'],[/\b(kipes?( charola)?( de arroz)?|charola de kipe)\b/,'kipeArroz'],
   [/\bpizza gruesa\b/,'pizzaG'],[/\bpizzas?\b/,'pizzaD'],[/\bbig ?mac\b/,'bigmac'],[/\b(hamburguesas?|whopper|quarter)\b/,'qp'],[/\bhot ?dogs?\b/,'hotdog'],
   [/\b(torta|sandwich|chapata)s? de verdura/,'tortaVerd'],[/\b(tortas?|sandwich(es)?|subway|chapatas?)\b/,'tortaPavo'],
   [/\bultra\b/,'ultra'],[/\b(cervezas?|chelas?)\b/,'cerveza'],[/\b(vinos?|copas?)\b/,'vino'],[/\b(tequilas?|mezcal(es)?|caballitos?|shots?|vodka|whisky|whiskey|wisky|wiski|wisqui|tragos?|ron|gin)\b/,'caballito'],
@@ -2066,6 +2128,8 @@ document.addEventListener('click', e=>{
     case 'undo': haptic(); doUndo(b.dataset.slot); break;
     case 'snack': haptic(); prefs.snack=b.dataset.v; render(); break;
     case 'latteaz': haptic(); prefs.latteAz=b.dataset.v==='1'; render(); break;
+    case 'kipeat': haptic(); st.kipeAt=b.dataset.v; ['comida','cena'].forEach(id=>{ const o=st.slots[id]; if (o && o.status!=='done'){ delete o.carb; delete o.custom; } }); save(); render(); break;
+    case 'kpz': { haptic(); ui.kpzOpen=true; prefs.kipePz=prefs.kipePz||{}; const k=b.dataset.k; let v=prefs.kipePz[k]||0; v = +b.dataset.d>0 ? (v ? v+5 : 50) : (v>50 ? v-5 : 0); prefs.kipePz[k]=v; save(); render(); break; }
     case 'carb': haptic(); st.slots[b.dataset.slot]=Object.assign({status:'pending'}, st.slots[b.dataset.slot]||{}, {carb:b.dataset.v}); render(); break;
     case 'delx': haptic(); go(()=>{ st.extras.splice(+b.dataset.i,1); }, true); break;
     case 'reset': if (confirm('¿Borrar lo de hoy y empezar de nuevo?')) go(()=>{ st=freshDay(); ui.open={}; }, true); break;
@@ -2419,6 +2483,7 @@ function aiBrain(raw,res){
   if (/(cuanto (vale|es|equivale|cuenta)|cuantos? (cereales|poa|grasas|frutas) (es|son|vale)|equivale|que es (un|una|el|la) (poa|cereal|grasa|fruta|equivalente)|que significa)/.test(t)) return aEquiv(t,res);
   if (/(regla|como se paga|que pasa si me paso|si me paso)/.test(t)) return aRules();
   if (/\b(verdura|ensalada|lechuga|pepino|brocoli|jitomate|espinaca|calabaza)/.test(t) && !/(taco|sushi|pollo|carne|pescado)/.test(t)) return {text:'La verdura es libre: come la que quieras. Si no te la acabas, no pasa nada y no se compensa.'};
+  if (/(kipe|charola|tamarindo)/.test(t) && /(cuant|puedo|caben?|alcanza|toca)/.test(t)) return aKipe(res);
   if (/\bcuant/.test(t) && /(puedo|caben?|alcanza|me toca|tocan|debo|comer|tomar|pedir|entran?)/.test(t)) return aHowMany(t,raw,res);
   const place=placeFromText(t);
   const restWords=/(restaurante|con (mis |unos )?amig|salgo a|salimos a|que pido|pedir|ordenar|comer fuera|cenar fuera|vamos a (comer|cenar))/.test(t);
@@ -3495,6 +3560,24 @@ function iconPickerHTML(){
 setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
+/* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
+const BUILD='1794174210';
+(function autoUpdate(){
+  let busy=false, last=0;
+  async function check(){
+    if (busy || BUILD.startsWith('__') || Date.now()-last<15000 || !/^https?:/.test(location.protocol)) return;
+    busy=true; last=Date.now();
+    try{
+      const r=await fetch(location.pathname+'?v='+Date.now(), {cache:'no-store'}); const t=await r.text();
+      const m=t.match(/const BUILD='(\d+)'/);
+      if (m && m[1]!==BUILD){ let tried=''; try{ tried=sessionStorage.getItem('dj.upd')||''; sessionStorage.setItem('dj.upd',m[1]); }catch(e){}
+        const a=document.activeElement; if (tried!==m[1] && !(a && /INPUT|TEXTAREA/.test(a.tagName))) location.replace(location.pathname+'?v='+m[1]); }
+    }catch(e){}
+    busy=false;
+  }
+  document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState==='visible') check(); });
+  window.addEventListener('pageshow', check); window.addEventListener('focus', check); setTimeout(check, 1200);
+})();
 window.DietEngine = {aiBrain, compute, buildSlots, leverItems, itemsEq, diffLines, overText, CAT, combos, parseFood, get st(){return st}, set st(v){st=v}, prefs, render};
 render();
 </script>
