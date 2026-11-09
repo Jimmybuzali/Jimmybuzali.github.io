@@ -1769,8 +1769,10 @@ function slotNotes(sl, res){
   if (sl.id==='helado') h += `<p class="note">Si no te lo comes, se libera para tu cena: 50 g de carbo, 30 g de proteína y 1 cda de aceite.</p>`;
   return h;
 }
-function slideHTML(act, slot, label, undo){
-  return `<div class="slide${undo?' undo':''}" data-slide="${act}" data-slot="${slot}" tabindex="0" role="button" aria-label="Desliza para confirmar: ${esc(label)}"><div class="slide-fill"></div><span class="slide-txt">${esc(label)} <i>→</i></span><span class="thumb">${undo?I.undo:I.ar}${I.ck}</span></div>`;
+function slideDo(a,label,txtId){ return slideHTML('do:'+a,'x',label,false,txtId); }
+function fireAct(a){ const t=document.createElement('button'); t.dataset.act=a; t.style.display='none'; document.body.appendChild(t); t.click(); t.remove(); }
+function slideHTML(act, slot, label, undo, txtId){
+  return `<div class="slide${undo?' undo':''}" data-slide="${act}" data-slot="${slot}" tabindex="0" role="button" aria-label="Desliza para confirmar: ${esc(label)}"><div class="slide-fill"></div><span class="slide-txt"${txtId?` id="${txtId}"`:''}>${esc(label)} <i>→</i></span><span class="thumb">${undo?I.undo:I.ar}${I.ck}</span></div>`;
 }
 function eatLabel(sl){ return sl.id==='latte'?'Desliza: me lo tomé':(sl.id==='comida'||sl.id==='cena')?'Desliza: me la comí':'Desliza: me lo comí'; }
 function slotActions(sl, res){
@@ -2098,7 +2100,7 @@ function editSheet(){
     <div class="field"><textarea id="edittext" rows="1" placeholder="Ej. 2 tortillas y 1 cda de aceite" aria-label="Agregar otra cosa">${esc(E.text||'')}</textarea><button class="send" data-act="editparse" aria-label="Agregar">${I.send}</button></div>
     ${E.unknown&&E.unknown.length?`<p class="unk">No está en tu tabla: ${esc(E.unknown.join(', '))}. Pregúntale a tu nutrióloga; la app no inventa números.</p>`:''}
     <button class="cta sec" data-act="pick">+ Buscarlo en tu tabla</button>
-    <button class="cta" data-act="saveedit">Guardar</button>`;
+    ${slideDo('saveedit','Desliza: guardar lo que comí')}`;
 }
 
 /* ---------- tabla ---------- */
@@ -2287,6 +2289,7 @@ function completeSlide(sl){
   sl.style.setProperty('--x', (sl.clientWidth-sl.querySelector('.thumb').offsetWidth-8)+'px');
   sl.classList.add('done');
   const act = sl.dataset.slide, id = sl.dataset.slot;
+  if (act.startsWith('do:')){ setTimeout(()=>{ ui.busy=false; fireAct(act.slice(3)); }, RM.matches?0:520); return; }
   setTimeout(()=>{ ui.busy=false; act==='skip' ? doSkip(id) : act==='undo' ? doUndo(id) : doEat(id); }, RM.matches?0:520);
 }
 function doEat(id){
@@ -3477,7 +3480,7 @@ function xtraSheet(){
       h+=`<p class="h4">Lo que trae</p><div class="eqs">${eqChips(itemsEq(items))}</div>`;
       const res=compute(st,prefs); const B=simFor('extra',items); const lines=diffLines(res,B,st); const ov=overText(B.over);
       h+=verdictHTML(!Object.keys(B.over).length, ov, lines, 'Si te lo comes, además de tus comidas.');
-      h+=`<button class="cta" data-act="xadd">Me lo comí: agregarlo</button><button class="cta sec" data-act="xclear">Solo preguntaba</button>`;
+      h+=`${slideDo('xadd','Desliza: agregarlo')}<button class="cta sec" data-act="xclear">Solo preguntaba</button>`;
     }
     h+='</div>';
   }
@@ -3532,14 +3535,14 @@ function qTileHTML(k){
     <p class="qt-hint">Desliza para elegir cuánto</p>
     <div class="eqs" id="qtEq">${eqChips(itemEq({k,q:n}))}</div>
     <p class="qt-ver ${v.ok?'ok':'warn'}" id="qtVer">${esc(v.t)}</p>
-    <button class="cta" data-act="qadd" id="qtAdd">Agregar ${esc(amountText(k,n))}</button></div>`;
+    ${slideDo('qadd','Desliza: agregar '+amountText(k,n),'qtAdd')}</div>`;
 }
 function qUpdate(n){
   const k=ui.xs.pick; if (!k) return; ui.xs.pickN=n; const max=qMax(k);
   const s=$('#qs'); if (s){ s.style.setProperty('--p',(n/max).toFixed(4)); s.setAttribute('aria-valuenow',n); }
   const a=amountText(k,n); const v=qVerdict(k,n);
   const set=(id,h)=>{ const el=document.getElementById(id); if (el) el.innerHTML=h; };
-  set('qtVal',esc(a)); set('qtEq',eqChips(itemEq({k,q:n}))); set('qtAdd','Agregar '+esc(a));
+  set('qtVal',esc(a)); set('qtEq',eqChips(itemEq({k,q:n}))); set('qtAdd','Desliza: agregar '+esc(a)+' <i>→</i>');
   const ve=$('#qtVer'); if (ve){ ve.textContent=v.t; ve.className='qt-ver '+(v.ok?'ok':'warn'); }
 }
 function quickKeys(){ return [...Object.keys(CAT).filter(k=>CAT[k].custom).map(k=>[k,CAT[k].n]), ...XPOP.filter(([k])=>CAT[k] && !CAT[k].disabled)]; }
@@ -3626,7 +3629,7 @@ function xLiveHTML(){
       h+=`<p class="h4">Lo que trae</p><div class="eqs">${eqChips(itemsEq(items))}</div>`;
       const res=compute(st,prefs); const B=simFor('extra',items); const lines=diffLines(res,B,st); const ov=overText(B.over);
       h+=verdictHTML(!Object.keys(B.over).length, ov, lines, 'Si te lo comes, esto cambia de tu dieta:');
-      h+=`<div class="xl-btns"><button class="cta" data-act="xl-add">Me lo comí: agregarlo</button><button class="cta sec" data-act="xl-clear">Solo preguntaba</button></div>`;
+      h+=`<div class="xl-btns">${slideDo('xl-add','Desliza: agregarlo')}<button class="cta sec" data-act="xl-clear">Solo preguntaba</button></div>`;
     }
   }
   if (X.unknown.length) h+=`<p class="unk">No existe en tu tabla: ${esc(X.unknown.join(', '))}.</p>${claudeKey()?'':`<button class="link blue" data-act="nfopen" data-name="${esc(X.unknown[0])}">Agregarlo como alimento nuevo</button>`}`;
@@ -3840,7 +3843,7 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794196957';
+const BUILD='1794197085';
 function verTxt(){ const n=+BUILD; if (!n) return 'de prueba'; const d=new Date(n*1000); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]+', '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 (function autoUpdate(){
   let busy=false, last=0;
