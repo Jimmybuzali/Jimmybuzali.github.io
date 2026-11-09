@@ -906,6 +906,18 @@ body::before{content:"";position:fixed;inset:-12%;z-index:0;pointer-events:none;
 .xv{min-width:120px;font-size:22px;font-weight:300;font-variant-numeric:tabular-nums}
 .xeq{font-size:13px;color:var(--ink-3);margin-top:8px}
 #xq{flex:1;min-width:0;border:0;background:transparent;outline:none;font-size:16px;font-weight:300;padding:11px 0;color:var(--ink)}
+.ai-conn{position:absolute;top:calc(env(safe-area-inset-top) + 18px);left:50%;transform:translateX(-50%);z-index:6;height:32px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:500;display:inline-flex;align-items:center;gap:7px;color:var(--ink-2);background:var(--glass);box-shadow:var(--glass-edge);transition:opacity .3s}
+.ai-conn::before{content:"";position:absolute;inset:-8px}
+.ai-conn:active{transform:translateX(-50%) scale(.92)}
+.ai-conn i{width:7px;height:7px;border-radius:50%;background:#B9B9C0}
+.ai-conn.on i{background:#34C46A}
+.ai-conn.off{color:#111;background:#fff;box-shadow:0 6px 18px -8px rgba(255,255,255,.35)}
+.ai-conn.off i{background:#E8783E}
+.ai.leaving .ai-conn{opacity:0;transition:opacity .16s}
+.aik-steps{margin:2px 0 12px;padding:0;list-style:none;counter-reset:s}
+.aik-steps li{counter-increment:s;display:flex;gap:10px;font-size:14px;line-height:1.4;padding:6px 0;color:var(--ink-2)}
+.aik-steps li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;background:#1C1C1E;color:#fff}
+.aik-steps a{color:inherit;font-weight:600}
 .aik{margin-top:4px}
 .aik-on{display:flex;align-items:center;gap:8px;font-size:15px;color:#2F7D4F}
 #aikey{flex:1;min-width:0;border:0;background:transparent;outline:none;font-size:16px;padding:11px 0;color:var(--ink)}
@@ -1150,6 +1162,7 @@ body::before,body::after{display:none !important}
 <div class="ai" id="ai" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Tu asistente de dieta">
   <div class="ai-bg" id="aiBg"></div>
   <button class="ai-new" data-act="ai-new">Nueva</button>
+  <button class="ai-conn" id="aiConn" data-act="ai-conn"></button>
   <button class="ai-x" data-act="ai-close" aria-label="Cerrar"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
   <div class="ai-fly" id="aiFly"><div class="ai-follow" id="aiFollow"><div class="ai-float"><span class="ai-rings" aria-hidden="true"><i></i><i></i><i></i></span><button class="orb ai-orb" data-act="ai-orb" aria-label="Hablarle"></button></div></div></div>
   <div class="ai-live" aria-live="polite"><p class="ai-hi" id="aiHi"></p><p class="ai-said ph" id="aiSaid"></p><div class="ai-ans" id="aiAns" aria-live="polite"></div><p class="ai-tip" id="aiTip"></p></div>
@@ -1913,6 +1926,7 @@ function sheetHTML(){
   if (ui.sheet==='fuera') return fueraSheet();
   if (ui.sheet==='edit') return editSheet();
   if (ui.sheet==='tabla') return tablaSheet();
+  if (ui.sheet==='aikey') return aiKeySheet();
   return '';
 }
 
@@ -2161,6 +2175,7 @@ document.addEventListener('click', e=>{
     case 'acc': haptic(); go(()=>{ ui.open[sl.id]=!ui.open[sl.id]; }, false); break;
     case 'ai': openAI(b.querySelector('.orb') || b); break;
     case 'ai-close': closeAI(); break;
+    case 'ai-conn': closeAI(()=>openSheet('aikey')); break;
     case 'ai-new': CL.hist=[]; ui.ai.n=0; ui.ai.acts=[]; $('#aiLog').innerHTML=''; $('#ai').classList.remove('chat'); setChips(defaultChips(res)); aiOrbTap(); break;
     case 'ai-chip': aiSend(b.dataset.v); break;
     case 'ai-send': aiSend($('#aiText').value); break;
@@ -2623,6 +2638,7 @@ function openAI(origin, q){
   const ai=$('#ai'); if (ai.classList.contains('on')) return;
   if (ui.sheet) closeSheetFast();
   if (ui.detail){ const k=ui.detail; ui.detail=null; $('#detail').innerHTML=''; const tile=document.querySelector(`.tile[data-k="${k}"]`); if (tile) tile.style.visibility=''; $('#scrim').classList.remove('on','black'); }
+  aiConnPaint();
   const res=compute(st,prefs); const H=aiHello(res);
   $('#aiHi').textContent=H.hi; $('#aiAns').innerHTML='';
   setLive(H.sub, true, SR?'Toca la esfera para hablarme, o escribe abajo.':'Escríbeme tu pregunta abajo.');
@@ -3261,6 +3277,11 @@ function xtraSheet(){
   return h;
 }
 function renderSheet(){ const s=$('#sheet'); if (!s || !ui.sheet) return; const ae=document.activeElement; const aid=ae&&ae.id&&s.contains(ae)?ae.id:null; const pos=aid&&typeof ae.selectionStart==='number'?ae.selectionStart:null; const top=s.scrollTop; s.innerHTML='<div class="grab"></div><button class="sh-x" data-act="close" aria-label="Cerrar"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>'+sheetHTML(); s.scrollTop=top; if (aid){ const t=document.getElementById(aid); if (t){ t.focus(); if (pos!=null){ try{ t.setSelectionRange(pos,pos); }catch(e){} } } } segAnimate(); }
+function aiConnPaint(){ const b=$('#aiConn'); if (!b) return; const on=!!claudeKey(); b.className='ai-conn '+(on?'on':'off'); b.innerHTML=on?'<i></i>Claude conectada':'<i></i>Conectar IA'; b.setAttribute('aria-label', on?'Claude conectada. Toca para ver o quitar la clave':'Conectar una inteligencia artificial'); }
+function aiKeySheet(){
+  const on=!!claudeKey();
+  return `<h2>Conectar IA</h2>${on?'':'<p class="sub">Conecta Claude para que tu asistente entienda cualquier frase y fotos.</p>'}${on?'':`<ol class="aik-steps"><li><span>Entra a <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> y abre <b>API Keys</b>.</span></li><li><span>Toca <b>Create Key</b> y cópiala.</span></li><li><span>Pégala aquí abajo y toca <b>Conectar</b>.</span></li></ol>`}${aiKeyHTML().replace('<p class="h4">Inteligencia artificial</p>','').replace(/<p class="note" style="margin-top:0">Sin clave[^<]*<\/p>/,'').replace('Sácala en console.anthropic.com, en API Keys. ','')}${on?'<button class="cta" data-act="ai" style="margin-top:10px">Hablar con mi asistente</button>':''}`;
+}
 function aiKeyHTML(){
   const on=!!claudeKey();
   return `<p class="h4">Inteligencia artificial</p>
@@ -3609,7 +3630,7 @@ setIcon('mono');
 
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && st.date!==todayStr()){ st=freshDay(); render(); } });
 /* ---------- se actualiza sola: si hay versión nueva en internet, se recarga ---------- */
-const BUILD='1794178420';
+const BUILD='1794190951';
 function verTxt(){ const n=+BUILD; if (!n) return 'de prueba'; const d=new Date(n*1000); return d.getDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]+', '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 (function autoUpdate(){
   let busy=false, last=0;
